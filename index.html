@@ -2,57 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PWA → APK | مدعوم بالذكاء الاصطناعي</title>
-  <!-- Tailwind + Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <style>
-    body {
-      background: radial-gradient(circle at 20% 30%, #1a0b2e 0%, #0e0418 100%);
-      font-family: 'Segoe UI', 'Tajawal', sans-serif;
-    }
-    .glass-card {
-      background: rgba(20, 5, 35, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(180, 130, 255, 0.2);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(150, 0, 255, 0.2);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, #e9b6ff 0%, #b76eff 50%, #a855f7 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .input-glow:focus {
-      border-color: #c084fc;
-      box-shadow: 0 0 15px #a855f7;
-    }
-    .btn-gradient {
-      background: linear-gradient(145deg, #6b21a8, #4c1d95);
-      border: 1px solid rgba(216, 180, 254, 0.4);
-    }
-    .btn-gradient:hover {
-      background: linear-gradient(145deg, #7e22ce, #5b21b6);
-      box-shadow: 0 0 18px #a855f7;
-    }
-    .admin-panel {
-      background: rgba(10, 3, 20, 0.85);
-      backdrop-filter: blur(8px);
-      border-right: 4px solid #a855f7;
-    }
+    body { background: radial-gradient(circle at 20% 30%, #1a0b2e 0%, #0e0418 100%); font-family: 'Segoe UI', 'Tajawal', sans-serif; }
+    .glass-card { background: rgba(20, 5, 35, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(180, 130, 255, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    .gradient-text { background: linear-gradient(135deg, #e9b6ff 0%, #b76eff 50%, #a855f7 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .btn-gradient { background: linear-gradient(145deg, #6b21a8, #4c1d95); }
   </style>
 </head>
-<body class="text-white min-h-screen flex flex-col items-center justify-start p-4 md:p-6">
-
-<!-- Firebase Config (استبدل بقيم مشروعك) -->
-<script>
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+<body class="text-white min-h-screen p-4 md:p-6">
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAD-8TuY7PZ_wCpnCkgEY6zWJM7sr6PjOE",
   authDomain: "pwa2apk-96645.firebaseapp.com",
@@ -62,326 +27,119 @@ const firebaseConfig = {
   appId: "1:32361192102:web:3ec47a71824f56455df267",
   measurementId: "G-LPV8HRYN39"
 };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 
-<div class="w-full max-w-5xl mx-auto">
+<div class="w-full max-w-4xl mx-auto">
   
   <!-- الشعار -->
-  <div class="flex flex-col items-center justify-center mb-6 text-center">
-    <div class="flex items-center gap-2 md:gap-3 mb-1">
-      <i class="fas fa-cube text-4xl md:text-5xl text-purple-400" style="text-shadow: 0 0 20px #c084fc;"></i>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight">
-        <span class="text-white">PWA</span> 
-        <span class="gradient-text text-5xl md:text-7xl mx-1">→</span> 
-        <span class="gradient-text">APK</span>
-      </h1>
-      <i class="fas fa-robot text-4xl md:text-5xl text-purple-400" style="text-shadow: 0 0 20px #c084fc;"></i>
+  <div class="text-center mb-6">
+    <div class="flex items-center justify-center gap-2">
+      <i class="fas fa-cube text-4xl text-purple-400"></i>
+      <h1 class="text-4xl md:text-6xl font-bold"><span>PWA</span> <span class="gradient-text text-5xl">→</span> <span class="gradient-text">APK</span></h1>
+      <i class="fas fa-robot text-4xl text-purple-400"></i>
     </div>
-    <div class="flex items-center gap-2 text-purple-300 text-sm md:text-lg font-medium">
-      <i class="fas fa-brain"></i><span>مدعوم بالذكاء الاصطناعي</span><i class="fas fa-brain"></i>
-    </div>
+    <p class="text-purple-300"><i class="fas fa-brain"></i> مدعوم بالذكاء الاصطناعي <i class="fas fa-brain"></i></p>
   </div>
 
-  <!-- بطاقة التحويل الرئيسية -->
-  <div class="glass-card rounded-3xl p-6 md:p-8 w-full mb-8">
-    <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center md:text-right">
-      <i class="fas fa-magic text-purple-400 ml-2"></i>
-      حول أي موقع إلى تطبيق اندرويد
-    </h2>
-    <p class="text-gray-300 text-sm md:text-base mb-6 text-center md:text-right">
-      ضع رابط الموقع، وسيتم إصلاح أي مشاكل في الـ manifest تلقائياً. بعد المعالجة تستلم الملفات الكاملة.
-    </p>
+  <!-- البطاقة الرئيسية -->
+  <div class="glass-card rounded-3xl p-6 md:p-8 mb-6">
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-magic text-purple-400 ml-2"></i>حول أي موقع إلى تطبيق اندرويد</h2>
+    <p class="text-gray-300 text-sm mb-6">ضع رابط الموقع، وأدخل بياناتك، واستلم الملفات كاملة مع مفاتيح التوقيع والتعليمات.</p>
 
     <!-- نموذج الإدخال -->
     <div class="space-y-4">
-      <!-- رابط الموقع -->
-      <div class="relative">
-        <span class="absolute inset-y-0 right-3 flex items-center text-purple-300"><i class="fas fa-link"></i></span>
-        <input type="url" id="pwaUrlInput" placeholder="https://example.com" 
-               class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 pr-10 pl-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 input-glow text-base" 
-               dir="ltr">
-      </div>
-
+      <input type="text" id="userName" placeholder="الاسم الكامل" class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 px-4 text-white">
+      <input type="email" id="userEmail" placeholder="البريد الإلكتروني" class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 px-4 text-white" dir="ltr">
+      <input type="url" id="siteUrl" placeholder="https://example.com" class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 px-4 text-white" dir="ltr">
+      
       <!-- اختيار طريقة التواصل -->
-      <div class="flex flex-wrap gap-3 items-center">
-        <label class="text-purple-200 text-sm font-medium">اختر طريقة استلام الملفات:</label>
-        <div class="flex gap-4">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="contactMethod" value="whatsapp" checked class="accent-purple-500 w-4 h-4">
-            <i class="fab fa-whatsapp text-green-400"></i>
-            <span>واتساب</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="contactMethod" value="email" class="accent-purple-500 w-4 h-4">
-            <i class="fas fa-envelope text-blue-300"></i>
-            <span>بريد إلكتروني</span>
-          </label>
-        </div>
+      <div class="flex gap-4 items-center">
+        <label class="flex items-center gap-2"><input type="radio" name="contactMethod" value="whatsapp" checked> <i class="fab fa-whatsapp text-green-400"></i> واتساب</label>
+        <label class="flex items-center gap-2"><input type="radio" name="contactMethod" value="email"> <i class="fas fa-envelope text-blue-300"></i> بريد</label>
+      </div>
+      
+      <input type="text" id="contactValue" placeholder="رقم الواتساب مع مفتاح الدولة" class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 px-4 text-white" dir="ltr">
+      
+      <div class="bg-purple-900/30 p-3 rounded-lg text-sm">
+        <i class="fas fa-clock ml-1"></i> بعد المعالجة تستلم APK + AAB + مفاتيح التوقيع + تعليمات النشر
       </div>
 
-      <!-- حقل الإدخال الديناميكي -->
-      <div id="contactInputContainer" class="relative">
-        <!-- سيتم تحديثه عبر JS -->
-      </div>
-
-      <!-- رسالة تنبيه -->
-      <div class="bg-purple-900/30 border border-purple-500/30 rounded-lg p-3 text-sm text-purple-200 flex items-start gap-2">
-        <i class="fas fa-clock mt-0.5"></i>
-        <span>العملية تحتاج بعض الوقت (عادة أقل من 3 دقائق). بعد الانتهاء ستستلم <strong>ملف APK + AAB + مفاتيح التوقيع + تعليمات النشر</strong> على الطريقة التي اخترتها.</span>
-      </div>
-
-      <button id="submitUrlBtn" class="btn-gradient w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg shadow-2xl flex items-center justify-center gap-2">
-        <i class="fas fa-flask"></i>
-        <span>حلل وحوّل</span>
-        <i class="fas fa-arrow-left mr-1"></i>
-      </button>
+      <button id="submitBtn" class="btn-gradient w-full py-4 rounded-xl font-bold text-lg"><i class="fas fa-flask ml-2"></i>حلل وحوّل</button>
     </div>
 
-    <!-- المميزات (مطابقة للصورة) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-center">
-      <div class="bg-white/5 rounded-xl p-4 border border-purple-500/20">
-        <i class="fas fa-bolt text-3xl text-purple-400 mb-2"></i>
-        <h3 class="font-bold text-lg">بناء فوري</h3>
-        <p class="text-gray-300 text-sm">من الرابط للملف في أقل من دقيقة، بدون أي إعدادات.</p>
-      </div>
-      <div class="bg-white/5 rounded-xl p-4 border border-purple-500/20">
-        <i class="fas fa-shield-alt text-3xl text-purple-400 mb-2"></i>
-        <h3 class="font-bold text-lg">إصلاح تلقائي</h3>
-        <p class="text-gray-300 text-sm">AI يطل الـ manifest ويصلى الأخطاء قبل البناء.</p>
-      </div>
-      <div class="bg-white/5 rounded-xl p-4 border border-purple-500/20">
-        <i class="fab fa-google-play text-3xl text-purple-400 mb-2"></i>
-        <h3 class="font-bold text-lg">جاهز لـ Play</h3>
-        <p class="text-gray-300 text-sm">ملف AAB موقّع جاهز للرفع على Google Play.</p>
-      </div>
+    <!-- المميزات -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6 text-center text-sm">
+      <div class="bg-white/5 p-3 rounded-lg"><i class="fas fa-bolt text-purple-400"></i> بناء فوري</div>
+      <div class="bg-white/5 p-3 rounded-lg"><i class="fas fa-shield-alt text-purple-400"></i> إصلاح تلقائي</div>
+      <div class="bg-white/5 p-3 rounded-lg"><i class="fab fa-google-play text-purple-400"></i> جاهز لـ Play</div>
     </div>
   </div>
 
-  <!-- تسجيل الدخول وحالة المستخدم -->
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-    <div id="userStatus" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full bg-purple-900/50 border border-purple-400 flex items-center justify-center">
-        <i class="fas fa-user-astronaut text-purple-300"></i>
-      </div>
-      <span id="userEmailDisplay" class="text-gray-300 text-sm">لم تسجل الدخول</span>
-    </div>
-    <button id="googleSignInBtn" class="bg-white text-gray-900 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-purple-100 transition shadow-lg">
-      <i class="fab fa-google text-red-600"></i>
-      <span>المتابعة بقوقل</span>
-    </button>
-    <button id="signOutBtn" class="hidden text-purple-300 hover:text-white underline text-sm px-4 py-2">
-      تسجيل خروج
-    </button>
+  <!-- حالة الطلب -->
+  <div id="requestStatus" class="glass-card rounded-2xl p-5 hidden">
+    <h3 class="text-lg font-bold mb-3">طلبك قيد المعالجة ⏳</h3>
+    <p id="statusMessage" class="text-gray-300"></p>
   </div>
 
-  <!-- لوحة الأدمن -->
-  <div id="adminPanel" class="admin-panel rounded-2xl p-5 mb-8 hidden">
-    <div class="flex items-center gap-2 text-purple-300 mb-3">
-      <i class="fas fa-crown text-yellow-400"></i>
-      <h3 class="text-xl font-bold">لوحة الأدمن - طلبات التحويل</h3>
-      <span class="bg-purple-800 text-xs px-2 py-1 rounded-full">Admin</span>
-    </div>
-    <div id="requestsList" class="space-y-3 max-h-96 overflow-y-auto p-1">
-      <p class="text-gray-400 text-sm">تحميل الطلبات...</p>
-    </div>
-  </div>
-
-  <!-- منطقة طلبات المستخدم -->
-  <div id="userRequestsArea" class="glass-card rounded-2xl p-5">
-    <div class="flex items-center gap-2 mb-4">
-      <i class="fas fa-history text-purple-400"></i>
-      <h3 class="text-xl font-bold">مواقعك قيد المعالجة</h3>
-    </div>
-    <div id="userRequestsList" class="space-y-3">
-      <p class="text-gray-400 text-sm">سجل الدخول وأدخل رابطاً للبدء</p>
-    </div>
-  </div>
-
-  <p class="text-center text-gray-500 text-xs mt-8 opacity-60">PWA → APK · جميع الحقوق محفوظة</p>
 </div>
 
 <script>
-  (function(){
-    // --- DOM Elements ---
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
-    const signOutBtn = document.getElementById('signOutBtn');
-    const userEmailDisplay = document.getElementById('userEmailDisplay');
-    const submitBtn = document.getElementById('submitUrlBtn');
-    const urlInput = document.getElementById('pwaUrlInput');
-    const contactContainer = document.getElementById('contactInputContainer');
-    const adminPanel = document.getElementById('adminPanel');
-    const requestsListDiv = document.getElementById('requestsList');
-    const userRequestsList = document.getElementById('userRequestsList');
-    const methodRadios = document.getElementsByName('contactMethod');
+  const submitBtn = document.getElementById('submitBtn');
+  const statusDiv = document.getElementById('requestStatus');
+  const statusMsg = document.getElementById('statusMessage');
 
-    const ADMIN_EMAIL = "admin@example.com";  // غير إلى بريدك
-    let currentUser = null;
-    let isAdmin = false;
-
-    // --- دالة إنشاء حقل الاتصال المناسب ---
-    function renderContactInput() {
-      const method = document.querySelector('input[name="contactMethod"]:checked').value;
-      if (method === 'whatsapp') {
-        contactContainer.innerHTML = `
-          <span class="absolute inset-y-0 right-3 flex items-center text-green-400"><i class="fab fa-whatsapp"></i></span>
-          <input type="tel" id="contactValue" placeholder="مثال: 966501234567" 
-                 class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 pr-10 pl-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500" dir="ltr">
-          <p class="text-xs text-gray-400 mt-1">الرجاء إدخال رقم الواتساب مع مفتاح الدولة بدون '+'</p>
-        `;
-      } else {
-        contactContainer.innerHTML = `
-          <span class="absolute inset-y-0 right-3 flex items-center text-blue-300"><i class="fas fa-envelope"></i></span>
-          <input type="email" id="contactValue" placeholder="example@domain.com" 
-                 class="w-full bg-black/40 border border-purple-500/40 rounded-xl py-4 pr-10 pl-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" dir="ltr">
-        `;
-      }
-    }
-    renderContactInput();
-    methodRadios.forEach(r => r.addEventListener('change', renderContactInput));
-
-    // --- Firebase Auth ---
-    auth.onAuthStateChanged(async (user) => {
-      currentUser = user;
-      if (user) {
-        userEmailDisplay.textContent = user.email;
-        googleSignInBtn.classList.add('hidden');
-        signOutBtn.classList.remove('hidden');
-        isAdmin = (user.email === ADMIN_EMAIL);
-        adminPanel.classList.toggle('hidden', !isAdmin);
-        if (isAdmin) loadAdminRequests();
-        loadUserRequests(user.uid);
-      } else {
-        currentUser = null; isAdmin = false;
-        userEmailDisplay.textContent = 'لم تسجل الدخول';
-        googleSignInBtn.classList.remove('hidden');
-        signOutBtn.classList.add('hidden');
-        adminPanel.classList.add('hidden');
-        userRequestsList.innerHTML = '<p class="text-gray-400 text-sm">سجل الدخول لتحويل المواقع</p>';
-      }
+  // تحديث placeholder حسب طريقة التواصل
+  document.querySelectorAll('input[name="contactMethod"]').forEach(r => {
+    r.addEventListener('change', (e) => {
+      const input = document.getElementById('contactValue');
+      input.placeholder = e.target.value === 'whatsapp' ? 'رقم الواتساب مع مفتاح الدولة' : 'example@domain.com';
     });
+  });
 
-    googleSignInBtn.addEventListener('click', () => {
-      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert('خطأ: '+e.message));
-    });
-    signOutBtn.addEventListener('click', () => auth.signOut());
+  submitBtn.addEventListener('click', async () => {
+    const name = document.getElementById('userName').value.trim();
+    const email = document.getElementById('userEmail').value.trim();
+    const site = document.getElementById('siteUrl').value.trim();
+    const method = document.querySelector('input[name="contactMethod"]:checked').value;
+    const contact = document.getElementById('contactValue').value.trim();
 
-    // --- إرسال الطلب ---
-    submitBtn.addEventListener('click', async () => {
-      if (!currentUser) { alert('يجب تسجيل الدخول أولاً'); return; }
-      const url = urlInput.value.trim();
-      if (!url || (!url.startsWith('http://') && !url.startsWith('https://'))) {
-        alert('الرجاء إدخال رابط صحيح'); return;
-      }
-      const contactMethod = document.querySelector('input[name="contactMethod"]:checked').value;
-      const contactInput = document.getElementById('contactValue');
-      const contactValue = contactInput.value.trim();
-      if (!contactValue) {
-        alert(contactMethod === 'whatsapp' ? 'الرجاء إدخال رقم الواتساب' : 'الرجاء إدخال البريد الإلكتروني');
-        return;
-      }
-      if (contactMethod === 'email' && !/^\S+@\S+\.\S+$/.test(contactValue)) {
-        alert('صيغة البريد الإلكتروني غير صحيحة'); return;
-      }
+    if (!name || !email || !site || !contact) return alert('جميع الحقول مطلوبة');
+    if (!site.startsWith('http')) return alert('رابط غير صحيح');
+    if (method === 'email' && !email.includes('@')) return alert('بريد غير صحيح');
 
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحليل...';
 
-      try {
-        await db.collection('conversionRequests').add({
-          userId: currentUser.uid,
-          userEmail: currentUser.email,
-          siteUrl: url,
-          contactMethod,
-          contactValue,
-          status: 'processing',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          manifestFixed: true,
-          // ملفات وهمية - ستضاف لاحقاً من قبل الأدمن (نظام محاكاة)
-        });
-        urlInput.value = '';
-        document.getElementById('contactValue').value = '';
-        alert('تم استلام طلبك! سيتم معالجته وإرسال الملفات الكاملة إلى ' + (contactMethod === 'whatsapp' ? 'واتساب' : 'بريدك الإلكتروني') + '.');
-        if (currentUser) loadUserRequests(currentUser.uid);
-        if (isAdmin) loadAdminRequests();
-      } catch (err) {
-        alert('خطأ: ' + err.message);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-flask"></i><span>حلل وحوّل</span><i class="fas fa-arrow-left mr-1"></i>';
-      }
-    });
+    try {
+      await db.collection('conversionRequests').add({
+        userName: name,
+        userEmail: email,
+        siteUrl: site,
+        contactMethod: method,
+        contactValue: contact,
+        status: 'processing',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
 
-    // --- تحميل طلبات المستخدم ---
-    async function loadUserRequests(uid) {
-      userRequestsList.innerHTML = '<p class="text-gray-400"><i class="fas fa-spinner fa-spin"></i> تحميل...</p>';
-      try {
-        const snap = await db.collection('conversionRequests').where('userId', '==', uid).orderBy('createdAt', 'desc').limit(10).get();
-        if (snap.empty) {
-          userRequestsList.innerHTML = '<p class="text-gray-400">لا توجد طلبات بعد</p>'; return;
-        }
-        let html = '';
-        snap.forEach(doc => {
-          const d = doc.data();
-          const methodIcon = d.contactMethod === 'whatsapp' ? '<i class="fab fa-whatsapp text-green-400"></i>' : '<i class="fas fa-envelope text-blue-300"></i>';
-          const statusBadge = d.status === 'completed' ? '<span class="bg-green-600 text-white px-2 py-0.5 rounded-full text-xs">مكتمل (تم الإرسال)</span>' : '<span class="bg-yellow-600 text-white px-2 py-0.5 rounded-full text-xs">قيد المعالجة</span>';
-          html += `<div class="bg-black/30 p-3 rounded-xl border border-purple-500/30">
-            <div class="flex justify-between"><span class="font-mono text-sm text-purple-200 truncate" dir="ltr">${d.siteUrl}</span>${statusBadge}</div>
-            <div class="flex items-center gap-2 text-xs text-gray-300 mt-1">${methodIcon} ${d.contactValue}</div>
-            <p class="text-xs text-purple-300 mt-1"><i class="fas fa-clock"></i> ${d.status === 'processing' ? 'جاري التحليل والإصلاح... ستستلم الملفات الكاملة قريباً.' : 'تم إرسال الملفات + المفاتيح + التعليمات.'}</p>
-          </div>`;
-        });
-        userRequestsList.innerHTML = html;
-      } catch(e) { userRequestsList.innerHTML = '<p class="text-red-400">خطأ في التحميل</p>'; }
+      statusDiv.classList.remove('hidden');
+      statusMsg.textContent = `تم استلام طلبك "${site}". ستصل الملفات الكاملة إلى ${method === 'whatsapp' ? 'واتساب' : 'بريدك'} (${contact}) خلال دقائق.`;
+
+      document.getElementById('siteUrl').value = '';
+      document.getElementById('contactValue').value = '';
+    } catch (e) {
+      alert('خطأ: ' + e.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-flask ml-2"></i>حلل وحوّل';
     }
-
-    // --- تحميل طلبات الأدمن ---
-    async function loadAdminRequests() {
-      requestsListDiv.innerHTML = '<p class="text-gray-400"><i class="fas fa-spinner fa-spin"></i> تحميل...</p>';
-      try {
-        const snap = await db.collection('conversionRequests').orderBy('createdAt', 'desc').limit(30).get();
-        if (snap.empty) { requestsListDiv.innerHTML = '<p class="text-gray-400">لا توجد طلبات</p>'; return; }
-        let html = '';
-        snap.forEach(doc => {
-          const d = doc.data();
-          const methodIcon = d.contactMethod === 'whatsapp' ? '<i class="fab fa-whatsapp text-green-400"></i>' : '<i class="fas fa-envelope text-blue-300"></i>';
-          const statusBtn = d.status === 'processing' ? 
-            `<button data-id="${doc.id}" data-contact="${d.contactValue}" data-method="${d.contactMethod}" data-site="${d.siteUrl}" class="sendCompleteBtn bg-indigo-700 hover:bg-indigo-600 text-white text-xs py-1.5 px-3 rounded-lg"><i class="fas fa-paper-plane"></i> إرسال الملفات</button>` : 
-            '<span class="text-green-400 text-xs"><i class="fas fa-check-circle"></i> تم الإرسال</span>';
-          html += `<div class="bg-black/40 p-3 rounded-lg border border-purple-600/30">
-            <div class="flex justify-between"><span class="text-sm" dir="ltr">${d.siteUrl}</span><span class="text-xs bg-purple-800 px-2 rounded">${d.userEmail}</span></div>
-            <div class="flex items-center gap-2 text-xs mt-1">${methodIcon} ${d.contactValue}</div>
-            <div class="mt-2 flex gap-2">${statusBtn}</div>
-          </div>`;
-        });
-        requestsListDiv.innerHTML = html;
-        document.querySelectorAll('.sendCompleteBtn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const id = btn.dataset.id;
-            const contact = btn.dataset.contact;
-            const method = btn.dataset.method;
-            const site = btn.dataset.site;
-            // محاكاة الإرسال: يمكن فتح رابط واتساب أو بريد
-            const packageMsg = `الملفات الكاملة لموقع ${site}:\n- APK\n- AAB\n- مفاتيح التوقيع (keystore)\n- تعليمات النشر على Google Play`;
-            if (method === 'whatsapp') {
-              window.open(`https://wa.me/${contact}?text=${encodeURIComponent(packageMsg)}`, '_blank');
-            } else {
-              window.location.href = `mailto:${contact}?subject=${encodeURIComponent('ملفات تطبيقك من PWA إلى APK')}&body=${encodeURIComponent(packageMsg)}`;
-            }
-            // تحديث الحالة في Firestore إلى completed (اختياري)
-            await db.collection('conversionRequests').doc(id).update({ status: 'completed', completedAt: firebase.firestore.FieldValue.serverTimestamp() });
-            loadAdminRequests(); 
-            if (currentUser) loadUserRequests(currentUser.uid);
-          });
-        });
-      } catch(e) { requestsListDiv.innerHTML = '<p class="text-red-400">خطأ</p>'; }
-    }
-
-    // تحديث دوري بسيط (اختياري)
-    setInterval(() => { if (currentUser) { loadUserRequests(currentUser.uid); if (isAdmin) loadAdminRequests(); } }, 10000);
-  })();
+  });
 </script>
+
+<!-- لوحة أدمن بسيطة -->
+<div style="position:fixed;bottom:10px;left:10px;opacity:0.5">
+  <button onclick="window.location.href='#'" class="text-[10px] text-purple-400">⚡</button>
+</div>
 </body>
 </html>
