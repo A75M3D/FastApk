@@ -2,45 +2,57 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>FastApk | تحويل PWA إلى تطبيق أندرويد بمساعدة AI Agent</title>
 
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Tajawal Font -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
+  <!-- Firebase SDKs (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
+    /* الأساسيات */
     body {
       background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
       font-family: 'Tajawal', sans-serif;
+      margin: 0;
+      padding: 0;
     }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 10px; }
-    .card-premium {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+
+    /* بطاقات زجاجية */
+    .card-glass {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(30, 58, 138, 0.1);
-      box-shadow: 0 20px 40px -12px rgba(30, 58, 138, 0.15);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 20px 35px -12px rgba(30, 58, 138, 0.15);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .card-premium:hover {
+    .card-glass:hover {
       transform: translateY(-4px);
       box-shadow: 0 30px 50px -15px rgba(30, 58, 138, 0.25);
-      border-color: rgba(30, 58, 138, 0.3);
+      border-color: rgba(30, 58, 138, 0.25);
     }
+
+    /* حقول الإدخال */
     .input-royal {
       background: white;
       border: 1.5px solid #e2e8f0;
       border-radius: 16px;
       padding: 0.9rem 1.2rem;
-      transition: all 0.2s ease;
       font-weight: 500;
+      transition: all 0.2s ease;
+      width: 100%;
     }
     .input-royal:focus {
       border-color: #1e3a8a;
@@ -51,93 +63,91 @@
       border-color: #ef4444;
       background-color: #fef2f2;
     }
-    .btn-royal {
+
+    /* أزرار رئيسية */
+    .btn-primary {
       background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
       color: white;
       border-radius: 40px;
       padding: 1rem 2rem;
       font-weight: 700;
       letter-spacing: 0.3px;
-      transition: all 0.3s ease;
       border: 1px solid rgba(255,255,255,0.2);
       box-shadow: 0 12px 20px -10px rgba(30, 58, 138, 0.4);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
-    .btn-royal:hover {
+    .btn-primary:hover {
       background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-      transform: scale(1.01) translateY(-2px);
+      transform: scale(1.02) translateY(-2px);
       box-shadow: 0 22px 30px -12px rgba(30, 64, 175, 0.5);
     }
-    .btn-royal:disabled {
+    .btn-primary:disabled {
       opacity: 0.7;
       cursor: not-allowed;
+      transform: none;
     }
-    .ai-pulse {
+
+    /* تأثير AI */
+    .ai-glow {
       animation: softPulse 3s infinite ease-in-out;
     }
     @keyframes softPulse {
-      0% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0.2); }
-      70% { box-shadow: 0 0 0 12px rgba(30, 58, 138, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0.15); }
+      70% { box-shadow: 0 0 0 15px rgba(30, 58, 138, 0); }
       100% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0); }
     }
+
+    /* راديو مخصص */
     .radio-custom {
       appearance: none;
-      width: 1.4rem;
-      height: 1.4rem;
+      width: 1.5rem;
+      height: 1.5rem;
       border: 2px solid #cbd5e1;
       border-radius: 50%;
       transition: all 0.15s;
       cursor: pointer;
+      position: relative;
     }
     .radio-custom:checked {
       border-color: #1e3a8a;
       background-color: #1e3a8a;
       box-shadow: inset 0 0 0 4px white, 0 0 0 2px #1e3a8a;
     }
+
+    /* شريط التقدم */
     .progress-container {
       width: 100%;
       height: 8px;
       background: #e2e8f0;
       border-radius: 20px;
       overflow: hidden;
-      margin: 16px 0;
+      margin: 12px 0;
     }
-    .progress-bar {
+    .progress-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #1e3a8a, #3b82f6);
       border-radius: 20px;
-      transition: width 0.3s ease;
+      transition: width 0.4s ease;
       box-shadow: 0 0 10px #3b82f6;
     }
-    .progress-step {
-      font-size: 0.9rem;
-      color: #1e293b;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .progress-icon {
-      color: #1e3a8a;
-    }
+
+    /* التبويبات */
     .tab-active {
       border-bottom: 3px solid #1e3a8a;
-      color: #1e3a8a;
+      color: #1e3a8a !important;
       font-weight: 700;
     }
-    .modal-overlay {
-      transition: opacity 0.3s ease;
-    }
-    .spinner {
-      border-top: 3px solid transparent;
-      border-right: 3px solid currentColor;
-      border-bottom: 3px solid currentColor;
-      border-left: 3px solid transparent;
+
+    /* Spinner */
+    .spinner-sm {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
       border-radius: 50%;
       width: 20px;
       height: 20px;
@@ -145,11 +155,34 @@
       display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* أيقونة واتساب عائمة */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background-color: #25D366;
+      color: white;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 999;
+      transition: transform 0.2s;
+      text-decoration: none;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body class="text-gray-800 antialiased">
 
-  <!-- Firebase init -->
+  <!-- Firebase config -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAD-8TuY7PZ_wCpnCkgEY6zWJM7sr6PjOE",
@@ -165,7 +198,7 @@
     const db = firebase.firestore();
   </script>
 
-  <!-- Navbar -->
+  <!-- الشريط العلوي -->
   <nav class="w-full bg-white/80 backdrop-blur-md border-b border-blue-100/60 fixed top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -176,96 +209,102 @@
           <span class="text-blue-900">Fast</span><span class="text-blue-600">Apk</span>
         </span>
       </div>
-      <div class="flex items-center gap-4" id="authButtons"></div>
+      <div id="authButtons" class="flex items-center gap-4"></div>
     </div>
   </nav>
 
-  <!-- نافذة المصادقة (Modal) -->
-  <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center modal-overlay">
-    <div class="card-premium rounded-3xl p-6 md:p-8 w-full max-w-md mx-4 relative transform transition-all">
+  <!-- نافذة المصادقة -->
+  <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center">
+    <div class="card-glass rounded-3xl p-6 md:p-8 w-full max-w-md mx-4 relative">
       <button id="closeAuthModal" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
 
       <div class="flex border-b border-gray-200 mb-6" id="tabContainer">
-        <button id="tabLogin" class="flex-1 pb-3 text-center font-semibold tab-active transition" data-tab="login">تسجيل الدخول</button>
-        <button id="tabRegister" class="flex-1 pb-3 text-center font-semibold text-gray-500 transition" data-tab="register">حساب جديد</button>
+        <button id="tabLogin" class="flex-1 pb-3 text-center font-semibold tab-active" data-tab="login">تسجيل الدخول</button>
+        <button id="tabRegister" class="flex-1 pb-3 text-center font-semibold text-gray-500" data-tab="register">حساب جديد</button>
       </div>
 
       <!-- نموذج تسجيل الدخول -->
       <form id="loginForm" class="space-y-5">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
-          <input type="email" id="loginEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
+          <input type="email" id="loginEmail" dir="ltr" class="input-royal" placeholder="example@company.com" required>
         </div>
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">كلمة المرور</label>
-          <input type="password" id="loginPassword" class="input-royal w-full" placeholder="كلمة المرور" required>
+          <input type="password" id="loginPassword" class="input-royal" placeholder="كلمة المرور" required>
         </div>
-        <button type="submit" class="btn-royal w-full" id="loginSubmitBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        <button type="submit" class="btn-primary w-full" id="loginSubmitBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
         <p id="loginFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
-        <p class="text-center"><a href="#" id="forgotPasswordLink" class="text-sm text-blue-600 hover:underline">نسيت كلمة المرور؟</a></p>
+        <p class="text-center"><a href="#" id="forgotPasswordLink" class="text-sm text-blue-600 hover:underline font-medium">نسيت كلمة المرور؟</a></p>
       </form>
 
       <!-- نموذج استعادة كلمة المرور -->
       <form id="resetForm" class="space-y-5 hidden">
-        <p class="text-sm text-gray-600">أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.</p>
+        <p class="text-sm text-gray-600 leading-relaxed">أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.</p>
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
-          <input type="email" id="resetEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
+          <input type="email" id="resetEmail" dir="ltr" class="input-royal" placeholder="example@company.com" required>
         </div>
-        <button type="submit" class="btn-royal w-full" id="resetSubmitBtn"><i class="fas fa-paper-plane"></i> إرسال الرابط</button>
+        <button type="submit" class="btn-primary w-full" id="resetSubmitBtn"><i class="fas fa-paper-plane"></i> إرسال الرابط</button>
         <p id="resetFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
-        <p class="text-center"><a href="#" id="backToLoginFromReset" class="text-sm text-blue-600 hover:underline">العودة لتسجيل الدخول</a></p>
+        <p class="text-center"><a href="#" id="backToLoginFromReset" class="text-sm text-blue-600 hover:underline font-medium">العودة لتسجيل الدخول</a></p>
       </form>
 
       <!-- نموذج إنشاء حساب -->
       <form id="registerForm" class="space-y-5 hidden">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">الاسم الكامل</label>
-          <input type="text" id="regName" class="input-royal w-full" placeholder="محمد العتيبي" required>
+          <input type="text" id="regName" class="input-royal" placeholder="محمد العتيبي" required>
         </div>
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
-          <input type="email" id="regEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
+          <input type="email" id="regEmail" dir="ltr" class="input-royal" placeholder="example@company.com" required>
         </div>
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">كلمة المرور (6 أحرف على الأقل)</label>
-          <input type="password" id="regPassword" class="input-royal w-full" placeholder="كلمة المرور" minlength="6" required>
+          <input type="password" id="regPassword" class="input-royal" placeholder="كلمة المرور" minlength="6" required>
         </div>
-        <button type="submit" class="btn-royal w-full" id="registerSubmitBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+        <button type="submit" class="btn-primary w-full" id="registerSubmitBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
         <p id="registerFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
       </form>
 
-      <!-- نجاح التسجيل -->
+      <!-- نجاح إنشاء الحساب -->
       <div id="registerSuccess" class="hidden text-center py-6 space-y-4">
         <i class="fas fa-paper-plane text-5xl text-blue-600"></i>
         <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط التأكيد</h3>
-        <p class="text-gray-600 leading-relaxed">
-          تم إرسال رابط تأكيد إلى بريدك الإلكتروني.<br>
-          <strong>يرجى التحقق من صندوق الوارد (Inbox)، وإذا لم تجد الرسالة، افحص مجلد الرسائل غير المرغوب فيها (Spam).</strong><br>
-          اضغط على الرابط الموجود في الرسالة لتفعيل حسابك.<br>
-          <span class="font-bold text-blue-800 mt-2 block">مع تحيات فريق FastApk</span>
-        </p>
-        <button id="backToLoginFromSuccess" class="btn-royal text-sm px-6 py-2">العودة لتسجيل الدخول</button>
+        <div class="text-gray-600 text-sm leading-relaxed space-y-2">
+          <p>تم إرسال رسالة تأكيد إلى بريدك الإلكتروني.</p>
+          <p class="font-semibold text-gray-800">يرجى التحقق من صندوق الوارد (Inbox)، وإذا لم تجد الرسالة، افحص مجلد الرسائل غير المرغوب فيها (Spam).</p>
+          <p>اضغط على الرابط الموجود في الرسالة لتفعيل حسابك.</p>
+          <p class="font-bold text-blue-800 mt-3">مع تحيات فريق FastApk</p>
+        </div>
+        <button id="backToLoginFromSuccess" class="btn-primary text-sm px-6 py-2">العودة لتسجيل الدخول</button>
       </div>
 
       <!-- نجاح استعادة كلمة المرور -->
       <div id="resetSuccess" class="hidden text-center py-6 space-y-4">
         <i class="fas fa-check-circle text-5xl text-green-600"></i>
         <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط إعادة التعيين</h3>
-        <p class="text-gray-600 leading-relaxed">
-          إذا كان البريد مسجلاً لدينا، ستصل رسالة إلى صندوق الوارد.<br>
-          <strong>إن لم تجدها، تفقد مجلد الرسائل غير المرغوب فيها (Spam).</strong><br>
-          اضغط الرابط لإعادة تعيين كلمة مرورك.<br>
-          <span class="font-bold text-blue-800 mt-2 block">فريق FastApk</span>
-        </p>
-        <button id="backToLoginFromResetSuccess" class="btn-royal text-sm px-6 py-2">العودة لتسجيل الدخول</button>
+        <div class="text-gray-600 text-sm leading-relaxed space-y-2">
+          <p>إذا كان البريد مسجلاً لدينا، ستصل رسالة إلى صندوق الوارد.</p>
+          <p class="font-semibold text-gray-800">إن لم تجدها، تفقد مجلد الرسائل غير المرغوب فيها (Spam).</p>
+          <p>اضغط الرابط لإعادة تعيين كلمة مرورك.</p>
+          <p class="font-bold text-blue-800 mt-3">فريق FastApk</p>
+        </div>
+        <button id="backToLoginFromResetSuccess" class="btn-primary text-sm px-6 py-2">العودة لتسجيل الدخول</button>
       </div>
     </div>
   </div>
 
-  <!-- محتوى الصفحة الرئيسي -->
-  <div class="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
-    <!-- Hero Section -->
+  <!-- أيقونة واتساب عائمة لخدمة العملاء -->
+  <a href="https://wa.me/249908280115?text=السلام%20عليكم%20لدي%20استفسار%20حول%20طلب%20تحويل%20PWA" target="_blank" class="whatsapp-float" title="خدمة العملاء">
+    <i class="fab fa-whatsapp text-2xl"></i>
+    <span>خدمة العملاء</span>
+  </a>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
+    <!-- Hero -->
     <div class="text-center max-w-4xl mx-auto mb-14">
       <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-sm font-semibold mb-7 shadow-sm">
         <i class="fas fa-microchip text-blue-700"></i>
@@ -282,10 +321,10 @@
       </p>
     </div>
 
-    <!-- التخطيط الرئيسي -->
+    <!-- شبكة المحتوى -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
       <!-- نموذج الإدخال -->
-      <div class="lg:col-span-3 card-premium rounded-3xl p-6 md:p-8 relative overflow-hidden">
+      <div class="lg:col-span-3 card-glass rounded-3xl p-6 md:p-8 relative overflow-hidden">
         <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-100/60 rounded-full blur-2xl"></div>
         <div class="relative z-10">
           <div class="flex items-center gap-4 mb-8 pb-5 border-b border-blue-100">
@@ -314,18 +353,18 @@
               <label class="block text-sm font-bold text-gray-700 mb-2">رابط الموقع <span class="text-red-500">*</span></label>
               <div class="relative">
                 <i class="fas fa-link absolute right-4 top-1/2 -translate-y-1/2 text-blue-500"></i>
-                <input type="url" id="siteUrl" placeholder="https://example.com" class="input-royal w-full pr-11 pl-4" dir="ltr">
+                <input type="url" id="siteUrl" placeholder="https://example.com" class="input-royal pr-11 pl-4" dir="ltr">
               </div>
               <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="fas fa-info-circle text-blue-500"></i> تأكد من أن الرابط يبدأ بـ HTTPS ويحتوي على manifest.</p>
             </div>
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-2">اسم المطور / الشركة <span class="text-red-500">*</span></label>
-              <input type="text" id="userName" placeholder="مثال: شركة التقنيات الذكية" class="input-royal w-full">
+              <input type="text" id="userName" placeholder="مثال: شركة التقنيات الذكية" class="input-royal">
               <p class="text-xs text-gray-500 mt-2">سيتم استخدامه في شهادة التوقيع (Keystore).</p>
             </div>
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني <span class="text-red-500">*</span></label>
-              <input type="email" id="userEmail" placeholder="developer@company.com" dir="ltr" class="input-royal w-full">
+              <input type="email" id="userEmail" placeholder="developer@company.com" dir="ltr" class="input-royal">
             </div>
             <div class="bg-blue-50/70 rounded-2xl p-6 border border-blue-100">
               <label class="block text-sm font-bold text-gray-700 mb-4">استلام التطبيق عبر <span class="text-red-500">*</span></label>
@@ -339,28 +378,33 @@
                   <span class="font-medium text-gray-700 group-hover:text-blue-800 transition"><i class="fas fa-envelope text-blue-600 ml-1 text-lg"></i> البريد الإلكتروني</span>
                 </label>
               </div>
-              <input type="text" id="contactValue" placeholder="+966 5X XXX XXXX" dir="ltr" class="input-royal w-full bg-white">
+              <input type="text" id="contactValue" placeholder="+966 5X XXX XXXX" dir="ltr" class="input-royal bg-white">
               <p class="text-xs text-gray-500 mt-2" id="contactHint">رقم الواتساب مع مفتاح الدولة</p>
             </div>
-            <button id="submitBtn" class="btn-royal w-full flex items-center justify-center gap-3 text-lg shadow-xl shadow-blue-200">
+            <button id="submitBtn" class="btn-primary w-full flex items-center justify-center gap-3 text-lg shadow-xl shadow-blue-200">
               <i class="fas fa-play"></i> فحص PWA وبدء التحويل
             </button>
+
             <div id="progressArea" class="hidden mt-4">
-              <div class="progress-step">
-                <i class="fas fa-spinner fa-pulse progress-icon"></i>
-                <span id="progressText">جارِ الاتصال بالخادم...</span>
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-spinner fa-pulse text-blue-700"></i>
+                <span id="progressText" class="font-medium">جارِ الاتصال بالخادم...</span>
               </div>
               <div class="progress-container">
-                <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+                <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
               </div>
               <p id="progressDetail" class="text-xs text-gray-500 mt-2">يتم فحص ملفات PWA، يرجى الانتظار...</p>
             </div>
+
             <div id="requestStatus" class="hidden mt-6 p-5 rounded-2xl bg-green-50 border border-green-200 text-green-800">
-              <div class="flex items-center gap-3 mb-2">
+              <div class="flex items-center gap-3 mb-3">
                 <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 <h3 class="font-bold text-lg">تم استلام الطلب بنجاح</h3>
               </div>
-              <p id="statusMessage" class="text-sm opacity-90"></p>
+              <p id="statusMessage" class="text-sm opacity-90 leading-relaxed"></p>
+              <div class="mt-4 border-t border-green-200 pt-4 text-sm text-green-900">
+                <p><i class="fab fa-whatsapp text-green-600 ml-1"></i> <strong>خدمة العملاء:</strong> إذا تأخر الاستلام أكثر من 10 دقائق، تواصل فوراً على واتساب <span dir="ltr">249908280115</span> وسيتم التسليم مباشرة.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -368,11 +412,9 @@
 
       <!-- الشريط الجانبي -->
       <div class="lg:col-span-2 space-y-7">
-        <div class="card-premium rounded-3xl p-7 ai-pulse border-t-4 border-t-blue-700">
+        <div class="card-glass rounded-3xl p-7 ai-glow border-t-4 border-t-blue-700">
           <div class="flex items-center gap-3 mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-3xl text-white shadow-md">
-              <i class="fas fa-brain"></i>
-            </div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-3xl text-white shadow-md"><i class="fas fa-brain"></i></div>
             <div>
               <h3 class="font-extrabold text-gray-900 text-xl">AI Agent مدمج</h3>
               <p class="text-xs text-blue-700 font-semibold">مراقب ذكي · مصحح تلقائي</p>
@@ -380,13 +422,14 @@
           </div>
           <p class="text-sm text-gray-600 leading-relaxed mb-5">أثناء التحويل، يقوم الوكيل الذكي بالمهام التالية:</p>
           <ul class="space-y-4">
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>التحقق من صلاحية <code class="bg-gray-100 px-2 py-0.5 rounded text-blue-800 text-xs">manifest.json</code> والأيقونات</span></li>
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>اقتراح إصلاحات تلقائية لأخطاء PWA الشائعة</span></li>
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>توليد Keystore آمن ومتوافق مع Google Play</span></li>
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>إشعار فوري عند اكتمال البناء بالطريقة المختارة</span></li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> التحقق من صلاحية <code class="bg-gray-100 px-2 py-0.5 rounded text-blue-800 text-xs">manifest.json</code> والأيقونات</li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> اقتراح إصلاحات تلقائية لأخطاء PWA الشائعة</li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> توليد Keystore آمن ومتوافق مع Google Play</li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> إشعار فوري عند اكتمال البناء بالطريقة المختارة</li>
           </ul>
         </div>
-        <div class="card-premium rounded-3xl p-7">
+
+        <div class="card-glass rounded-3xl p-7">
           <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3"><i class="fas fa-gift text-blue-700"></i> ماذا ستحصل؟</h3>
           <div class="space-y-5">
             <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-700"><i class="fab fa-android text-xl"></i></div><div><strong class="block text-gray-900">ملف APK</strong><span class="text-sm text-gray-500">للتثبيت المباشر والاختبار</span></div></div>
@@ -394,30 +437,19 @@
             <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700"><i class="fas fa-key text-xl"></i></div><div><strong class="block text-gray-900">Keystore للتوقيع</strong><span class="text-sm text-gray-500">لضمان ملكية التطبيق والتحديثات</span></div></div>
           </div>
         </div>
-        <div class="card-premium rounded-3xl p-7 bg-blue-50/70 border border-blue-200">
+
+        <div class="card-glass rounded-3xl p-7 bg-blue-50/70 border border-blue-200">
           <div class="flex items-start gap-3"><i class="fas fa-check-circle text-blue-700 text-xl mt-0.5"></i><div><h4 class="font-bold text-gray-900">متطلبات PWA الناجح</h4><ul class="text-sm text-gray-600 space-y-1 mt-3 list-disc list-inside marker:text-blue-500"><li>وجود <code>manifest.json</code> مرتبط</li><li>أيقونة بحجم 512x512 على الأقل</li><li>الموقع يخدم عبر HTTPS</li></ul><div class="mt-4 text-xs text-gray-500 border-t border-blue-200 pt-4"><i class="fas fa-robot text-blue-600 ml-1"></i> سيساعدك AI Agent في تشخيص أي نقص.</div></div></div>
         </div>
-        <div class="card-premium rounded-3xl p-7">
+
+        <div class="card-glass rounded-3xl p-7">
           <h4 class="font-bold text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-question-circle text-blue-700"></i> أسئلة شائعة</h4>
           <details class="group mb-3 border-b border-gray-100 pb-3"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">ما هي مدة التحويل؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">عادة ما يستغرق بين 3 إلى 7 دقائق بعد التحقق من PWA.</p></details>
           <details class="group"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">هل يدعم Google Play؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">نعم، نوفر ملف AAB جاهز للرفع، بالإضافة إلى التوقيع الخاص بك.</p></details>
         </div>
       </div>
     </div>
-
-    <!-- قسم طلباتي (يظهر عند تسجيل الدخول) -->
-    <div id="userRequestsSection" class="hidden mt-12 card-premium rounded-3xl p-6 md:p-8">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
-          <i class="fas fa-list-ul text-blue-700"></i> طلباتي السابقة
-        </h2>
-        <button id="closeRequestsBtn" class="text-gray-500 hover:text-gray-700 text-xl"><i class="fas fa-times"></i></button>
-      </div>
-      <div id="requestsList" class="space-y-4">
-        <!-- تُملأ عبر JavaScript -->
-      </div>
-    </div>
-  </div>
+  </main>
 
   <footer class="border-t border-blue-100 bg-white/60 backdrop-blur-sm py-8 mt-10">
     <div class="max-w-7xl mx-auto px-6 text-center text-gray-600 text-sm">
@@ -426,7 +458,7 @@
   </footer>
 
   <script>
-    // ============= DOM Elements =============
+    // ---------- عناصر DOM ----------
     const authModal = document.getElementById('authModal');
     const closeAuthModal = document.getElementById('closeAuthModal');
     const loginForm = document.getElementById('loginForm');
@@ -437,62 +469,58 @@
     const tabLogin = document.getElementById('tabLogin');
     const tabRegister = document.getElementById('tabRegister');
     const authButtons = document.getElementById('authButtons');
-    const userRequestsSection = document.getElementById('userRequestsSection');
-    const requestsList = document.getElementById('requestsList');
-    const closeRequestsBtn = document.getElementById('closeRequestsBtn');
 
-    // Form submit buttons
-    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-    const registerSubmitBtn = document.getElementById('registerSubmitBtn');
-    const resetSubmitBtn = document.getElementById('resetSubmitBtn');
+    const loginSubmit = document.getElementById('loginSubmitBtn');
+    const registerSubmit = document.getElementById('registerSubmitBtn');
+    const resetSubmit = document.getElementById('resetSubmitBtn');
 
-    // Feedback paragraphs
     const loginFeedback = document.getElementById('loginFeedback');
     const registerFeedback = document.getElementById('registerFeedback');
     const resetFeedback = document.getElementById('resetFeedback');
 
-    // ============= Helper: Loading State =============
-    function setLoading(button, isLoading, originalHTML) {
-      if (isLoading) {
-        button.disabled = true;
-        button.dataset.original = button.innerHTML;
-        button.innerHTML = `<span class="spinner"></span> جارٍ المعالجة...`;
+    // ---------- دوال عامة ----------
+    function toggleLoading(btn, loading) {
+      if (loading) {
+        btn.disabled = true;
+        btn.dataset.origHtml = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner-sm"></span> جارٍ المعالجة...`;
       } else {
-        button.disabled = false;
-        button.innerHTML = button.dataset.original || originalHTML;
-        delete button.dataset.original;
+        btn.disabled = false;
+        btn.innerHTML = btn.dataset.origHtml || btn.innerHTML;
       }
     }
 
-    // ============= Modal Controls =============
-    function openModal() {
-      authModal.classList.remove('hidden');
-      authModal.classList.add('flex');
-      resetForms();
-      switchTab('login');
+    function translateAuthError(code) {
+      const map = {
+        'auth/email-already-in-use': 'البريد الإلكتروني مستخدم بالفعل.',
+        'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة.',
+        'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل).',
+        'auth/user-not-found': 'لا يوجد حساب بهذا البريد.',
+        'auth/wrong-password': 'كلمة المرور غير صحيحة.',
+        'auth/too-many-requests': 'محاولات كثيرة جداً. حاول مرة أخرى لاحقاً.',
+        'auth/network-request-failed': 'فشل الاتصال بالشبكة، تأكد من الإنترنت.'
+      };
+      return map[code] || 'حدث خطأ غير متوقع. حاول مرة أخرى.';
     }
 
-    function closeModal() {
-      authModal.classList.add('hidden');
-      authModal.classList.remove('flex');
-    }
+    // ---------- إدارة النافذة ----------
+    function openModal() { authModal.classList.add('flex'); authModal.classList.remove('hidden'); resetForms(); switchTab('login'); }
+    function closeModal() { authModal.classList.add('hidden'); authModal.classList.remove('flex'); }
+    closeAuthModal.addEventListener('click', closeModal);
+    authModal.addEventListener('click', e => { if (e.target === authModal) closeModal(); });
 
     function resetForms() {
       loginForm.reset(); registerForm.reset(); resetForm.reset();
       loginFeedback.textContent = ''; registerFeedback.textContent = ''; resetFeedback.textContent = '';
-      loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
-      resetForm.classList.add('hidden'); registerSuccess.classList.add('hidden'); resetSuccess.classList.add('hidden');
-      setLoading(loginSubmitBtn, false); setLoading(registerSubmitBtn, false); setLoading(resetSubmitBtn, false);
+      loginForm.classList.remove('hidden'); registerForm.classList.add('hidden'); resetForm.classList.add('hidden');
+      registerSuccess.classList.add('hidden'); resetSuccess.classList.add('hidden');
+      toggleLoading(loginSubmit, false); toggleLoading(registerSubmit, false); toggleLoading(resetSubmit, false);
     }
 
-    closeAuthModal.addEventListener('click', closeModal);
-    authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
-
-    // ============= Tab Switching =============
     function switchTab(tab) {
-      document.getElementById('tabContainer').style.display = (tab === 'reset') ? 'none' : 'flex';
-      loginForm.classList.add('hidden'); registerForm.classList.add('hidden');
-      resetForm.classList.add('hidden'); registerSuccess.classList.add('hidden'); resetSuccess.classList.add('hidden');
+      const tabs = document.getElementById('tabContainer');
+      tabs.style.display = (tab === 'reset') ? 'none' : 'flex';
+      [loginForm, registerForm, resetForm, registerSuccess, resetSuccess].forEach(el => el.classList.add('hidden'));
       tabLogin.classList.remove('tab-active', 'text-blue-900'); tabLogin.classList.add('text-gray-500');
       tabRegister.classList.remove('tab-active', 'text-blue-900'); tabRegister.classList.add('text-gray-500');
 
@@ -509,305 +537,188 @@
 
     tabLogin.addEventListener('click', () => switchTab('login'));
     tabRegister.addEventListener('click', () => switchTab('register'));
-
-    document.getElementById('forgotPasswordLink').addEventListener('click', (e) => { e.preventDefault(); switchTab('reset'); });
-    document.getElementById('backToLoginFromReset').addEventListener('click', (e) => { e.preventDefault(); switchTab('login'); });
+    document.getElementById('forgotPasswordLink').addEventListener('click', e => { e.preventDefault(); switchTab('reset'); });
+    document.getElementById('backToLoginFromReset').addEventListener('click', e => { e.preventDefault(); switchTab('login'); });
     document.getElementById('backToLoginFromSuccess').addEventListener('click', () => switchTab('login'));
     document.getElementById('backToLoginFromResetSuccess').addEventListener('click', () => switchTab('login'));
 
-    // ============= Authentication Logic =============
+    // ---------- مصادقة ----------
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('regName').value.trim();
       const email = document.getElementById('regEmail').value.trim();
-      const password = document.getElementById('regPassword').value;
-      registerFeedback.textContent = '';
-
-      if (!name || !email || password.length < 6) {
-        registerFeedback.textContent = 'يرجى ملء جميع الحقول بشكل صحيح (كلمة المرور 6 أحرف على الأقل).';
+      const pass = document.getElementById('regPassword').value;
+      if (!name || !email || pass.length < 6) {
+        registerFeedback.innerHTML = 'يرجى ملء جميع الحقول (كلمة المرور 6 أحرف على الأقل).';
         registerFeedback.className = 'text-red-600 text-sm mt-2';
         return;
       }
-
-      setLoading(registerSubmitBtn, true);
+      toggleLoading(registerSubmit, true);
       try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        await userCredential.user.updateProfile({ displayName: name });
-        await userCredential.user.sendEmailVerification();
-
+        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await cred.user.updateProfile({ displayName: name });
+        await cred.user.sendEmailVerification();
         registerForm.reset();
         registerForm.classList.add('hidden');
         registerSuccess.classList.remove('hidden');
-      } catch (error) {
-        registerFeedback.textContent = translateAuthError(error.code);
+      } catch (err) {
+        registerFeedback.textContent = translateAuthError(err.code);
         registerFeedback.className = 'text-red-600 text-sm mt-2';
       } finally {
-        setLoading(registerSubmitBtn, false);
+        toggleLoading(registerSubmit, false);
       }
     });
 
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      loginFeedback.textContent = '';
-
-      if (!email || !password) {
+      const pass = document.getElementById('loginPassword').value;
+      if (!email || !pass) {
         loginFeedback.textContent = 'يرجى إدخال البريد وكلمة المرور.';
         loginFeedback.className = 'text-red-600 text-sm mt-2';
         return;
       }
-
-      setLoading(loginSubmitBtn, true);
+      toggleLoading(loginSubmit, true);
       try {
-        await auth.signInWithEmailAndPassword(email, password);
+        await auth.signInWithEmailAndPassword(email, pass);
         closeModal();
-      } catch (error) {
-        loginFeedback.textContent = translateAuthError(error.code);
+      } catch (err) {
+        loginFeedback.textContent = translateAuthError(err.code);
         loginFeedback.className = 'text-red-600 text-sm mt-2';
       } finally {
-        setLoading(loginSubmitBtn, false);
+        toggleLoading(loginSubmit, false);
       }
     });
 
     resetForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('resetEmail').value.trim();
-      resetFeedback.textContent = '';
-
       if (!email) {
         resetFeedback.textContent = 'يرجى إدخال البريد الإلكتروني.';
         resetFeedback.className = 'text-red-600 text-sm mt-2';
         return;
       }
-
-      setLoading(resetSubmitBtn, true);
+      toggleLoading(resetSubmit, true);
       try {
-        await auth.sendPasswordResetEmail(email, {
-          url: 'https://pwa2apk-96645.firebaseapp.com/__/auth/action',
-          handleCodeInApp: false
-        });
+        await auth.sendPasswordResetEmail(email, { url: 'https://pwa2apk-96645.firebaseapp.com/__/auth/action', handleCodeInApp: false });
         resetForm.reset();
         resetForm.classList.add('hidden');
         resetSuccess.classList.remove('hidden');
-      } catch (error) {
-        resetFeedback.textContent = translateAuthError(error.code);
+      } catch (err) {
+        resetFeedback.textContent = translateAuthError(err.code);
         resetFeedback.className = 'text-red-600 text-sm mt-2';
       } finally {
-        setLoading(resetSubmitBtn, false);
+        toggleLoading(resetSubmit, false);
       }
     });
 
-    // ============= Auth State Observer + User Requests =============
-    let currentUserEmail = null;
-
-    auth.onAuthStateChanged((user) => {
-      const userArea = document.getElementById('authButtons');
+    // ---------- مراقب حالة المستخدم ----------
+    auth.onAuthStateChanged(user => {
       if (user) {
-        currentUserEmail = user.email;
-        const statusBadge = user.emailVerified
+        const badge = user.emailVerified
           ? '<span class="inline-flex items-center gap-1 text-green-700 bg-green-100 px-3 py-1 rounded-full text-xs font-semibold"><i class="fas fa-user-circle text-green-500"></i> نشط الآن</span>'
           : '<span class="inline-flex items-center gap-1 text-amber-700 bg-amber-100 px-3 py-1 rounded-full text-xs font-semibold"><i class="fas fa-user-circle text-amber-500"></i> غير مفعل</span>';
-
-        userArea.innerHTML = `
+        authButtons.innerHTML = `
           <div class="flex items-center gap-3 text-sm">
             <span class="font-semibold text-gray-900">${user.displayName || 'مستخدم'}</span>
-            ${statusBadge}
+            ${badge}
             <button onclick="auth.signOut()" class="text-gray-500 hover:text-red-600 transition" title="تسجيل خروج"><i class="fas fa-sign-out-alt text-lg"></i></button>
           </div>
         `;
-
-        // إظهار قسم الطلبات
-        userRequestsSection.classList.remove('hidden');
-        loadUserRequests(user.email);
       } else {
-        currentUserEmail = null;
-        userArea.innerHTML = `
-          <button onclick="openModal()" class="btn-royal text-sm py-2.5 px-5 shadow-md"><i class="fas fa-user"></i> دخول / حساب جديد</button>
-        `;
-        userRequestsSection.classList.add('hidden');
+        authButtons.innerHTML = `<button onclick="openModal()" class="btn-primary text-sm py-2.5 px-5 shadow-md"><i class="fas fa-user"></i> دخول / حساب جديد</button>`;
       }
     });
 
-    closeRequestsBtn.addEventListener('click', () => {
-      userRequestsSection.classList.add('hidden');
-    });
-
-    // ============= Firestore: Load & Delete Requests =============
-    async function loadUserRequests(userEmail) {
-      requestsList.innerHTML = `<div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-pulse text-2xl"></i><p class="mt-2">جارٍ تحميل الطلبات...</p></div>`;
-      try {
-        const snapshot = await db.collection('conversionRequests')
-          .where('userEmail', '==', userEmail)
-          .orderBy('createdAt', 'desc')
-          .get();
-
-        if (snapshot.empty) {
-          requestsList.innerHTML = `<div class="text-center text-gray-500 py-8"><i class="fas fa-inbox text-4xl"></i><p class="mt-2">لا توجد طلبات حالياً.</p></div>`;
-          return;
-        }
-
-        let html = '';
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const statusText = data.status === 'completed' ? 'اكتمل بنجاح' :
-                             data.status === 'failed' ? 'فشل' : 'قيد المعالجة';
-          const statusColor = data.status === 'completed' ? 'bg-green-100 text-green-800' :
-                              data.status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800';
-          const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-SA') : '---';
-          html += `
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-              <div class="flex-1">
-                <p class="font-bold text-gray-800" dir="ltr">${data.siteUrl || '---'}</p>
-                <p class="text-xs text-gray-500 mt-1">${date}</p>
-              </div>
-              <div class="flex items-center gap-3 mt-3 md:mt-0">
-                <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColor}">${statusText}</span>
-                <button class="text-red-500 hover:text-red-700 transition delete-request-btn" data-id="${doc.id}"><i class="fas fa-trash-alt"></i></button>
-              </div>
-            </div>
-          `;
-        });
-        requestsList.innerHTML = html;
-
-        // Attach delete events
-        document.querySelectorAll('.delete-request-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const id = btn.dataset.id;
-            if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
-              try {
-                await db.collection('conversionRequests').doc(id).delete();
-                loadUserRequests(userEmail); // refresh
-              } catch (err) {
-                alert('فشل الحذف: ' + err.message);
-              }
-            }
-          });
-        });
-      } catch (err) {
-        requestsList.innerHTML = `<div class="text-center text-red-600 py-8"><i class="fas fa-exclamation-circle text-2xl"></i><p class="mt-2">خطأ في التحميل: ${err.message}</p></div>`;
-      }
-    }
-
-    // ============= Error Translation =============
-    function translateAuthError(code) {
-      const map = {
-        'auth/email-already-in-use': 'البريد الإلكتروني مستخدم بالفعل.',
-        'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة.',
-        'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل).',
-        'auth/user-not-found': 'لا يوجد حساب بهذا البريد.',
-        'auth/wrong-password': 'كلمة المرور غير صحيحة.',
-        'auth/too-many-requests': 'محاولات كثيرة جداً. حاول مرة أخرى لاحقاً.',
-        'auth/network-request-failed': 'فشل الاتصال بالشبكة، تأكد من الإنترنت.'
-      };
-      return map[code] || 'حدث خطأ غير متوقع. حاول مرة أخرى.';
-    }
-
-    // ============= PWA Conversion Form =============
+    // ---------- نموذج التحويل ----------
     const submitBtn = document.getElementById('submitBtn');
     const progressArea = document.getElementById('progressArea');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
     const progressDetail = document.getElementById('progressDetail');
-    const statusDiv = document.getElementById('requestStatus');
-    const statusMsg = document.getElementById('statusMessage');
+    const requestStatus = document.getElementById('requestStatus');
+    const statusMessage = document.getElementById('statusMessage');
     const contactHint = document.getElementById('contactHint');
 
-    document.querySelectorAll('input[name="contactMethod"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        const inputField = document.getElementById('contactValue');
-        if (e.target.value === 'whatsapp') {
-          inputField.placeholder = '+966 5X XXX XXXX';
+    document.querySelectorAll('input[name="contactMethod"]').forEach(r => {
+      r.addEventListener('change', function() {
+        const field = document.getElementById('contactValue');
+        if (this.value === 'whatsapp') {
+          field.placeholder = '+966 5X XXX XXXX';
           contactHint.textContent = 'رقم الواتساب مع مفتاح الدولة';
-          inputField.type = 'tel';
+          field.type = 'tel';
         } else {
-          inputField.placeholder = 'developer@example.com';
+          field.placeholder = 'developer@example.com';
           contactHint.textContent = 'أدخل بريدك الإلكتروني للاستلام';
-          inputField.type = 'email';
+          field.type = 'email';
         }
       });
     });
 
-    function setFieldError(fieldId, isError) {
-      const field = document.getElementById(fieldId);
-      if (isError) field.classList.add('error');
-      else field.classList.remove('error');
+    function setFieldError(id, isError) {
+      document.getElementById(id).classList.toggle('error', isError);
     }
 
-    function simulateProgress(siteUrl, callback) {
+    function simulateProgress(callback) {
       const steps = [
-        { text: 'جارِ الاتصال بالموقع...', detail: 'فحص اتصال HTTPS والتحقق من الشهادة', percent: 15 },
-        { text: 'فحص ملف manifest.json', detail: 'التحقق من وجود المانيفست وصلاحيته', percent: 35 },
-        { text: 'فحص الأيقونات والأبعاد', detail: 'التأكد من وجود أيقونة PWA بحجم 512x512', percent: 55 },
-        { text: 'تحليل هيكل PWA', detail: 'مراجعة Service Worker وإعدادات التطبيق', percent: 75 },
-        { text: 'تجهيز التوقيع الرقمي', detail: 'إنشاء Keystore آمن للتطبيق', percent: 90 },
-        { text: 'اكتمال الفحص!', detail: 'تم التحقق بنجاح، جارٍ إنشاء الطلب...', percent: 100 }
+        { text: 'جارِ الاتصال بالموقع...', detail: 'فحص اتصال HTTPS والتحقق من الشهادة', pct: 15 },
+        { text: 'فحص ملف manifest.json', detail: 'التحقق من وجود المانيفست وصلاحيته', pct: 35 },
+        { text: 'فحص الأيقونات والأبعاد', detail: 'التأكد من وجود أيقونة 512x512', pct: 55 },
+        { text: 'تحليل هيكل PWA', detail: 'مراجعة Service Worker والإعدادات', pct: 75 },
+        { text: 'تجهيز التوقيع الرقمي', detail: 'إنشاء Keystore آمن', pct: 90 },
+        { text: 'اكتمال الفحص!', detail: 'تم التحقق، جارٍ حفظ الطلب...', pct: 100 }
       ];
-
-      let currentStep = 0;
+      let i = 0;
       progressArea.classList.remove('hidden');
       progressBar.style.width = '0%';
-      
-      const interval = setInterval(() => {
-        if (currentStep < steps.length) {
-          const step = steps[currentStep];
-          progressText.textContent = step.text;
-          progressDetail.textContent = step.detail;
-          progressBar.style.width = step.percent + '%';
-          
-          const icon = document.querySelector('#progressArea .progress-icon');
-          if (currentStep === steps.length - 1) {
-            icon.className = 'fas fa-check-circle text-green-600 progress-icon';
-          } else {
-            icon.className = 'fas fa-spinner fa-pulse progress-icon';
+      const icon = document.querySelector('#progressArea .fa-spinner');
+      const timer = setInterval(() => {
+        if (i < steps.length) {
+          const s = steps[i];
+          progressText.textContent = s.text;
+          progressDetail.textContent = s.detail;
+          progressBar.style.width = s.pct + '%';
+          if (i === steps.length - 1) {
+            icon.classList.remove('fa-spinner', 'fa-pulse');
+            icon.classList.add('fa-check-circle', 'text-green-600');
           }
-          
-          currentStep++;
+          i++;
         } else {
-          clearInterval(interval);
-          if (callback) callback();
+          clearInterval(timer);
+          callback();
         }
       }, 700);
     }
 
     submitBtn.addEventListener('click', async () => {
-      // إذا لم يكن المستخدم مسجلًا، نطلب تسجيل الدخول
       if (!auth.currentUser) {
-        alert('يرجى تسجيل الدخول أولاً قبل تقديم الطلب.');
+        alert('يرجى تسجيل الدخول أولاً لتقديم الطلب.');
         openModal();
         return;
       }
-
       const name = document.getElementById('userName').value.trim();
       const email = document.getElementById('userEmail').value.trim();
       const site = document.getElementById('siteUrl').value.trim();
       const method = document.querySelector('input[name="contactMethod"]:checked').value;
       const contact = document.getElementById('contactValue').value.trim();
 
-      ['siteUrl', 'userName', 'userEmail', 'contactValue'].forEach(id => setFieldError(id, false));
-
-      let hasError = false;
-      if (!name) { setFieldError('userName', true); hasError = true; }
-      if (!email || !email.includes('@')) { setFieldError('userEmail', true); hasError = true; }
-      if (!site || (!site.startsWith('https://') && !site.startsWith('http://'))) { 
-        setFieldError('siteUrl', true); hasError = true; 
-        alert('الرابط يجب أن يبدأ بـ http:// أو https:// (يفضل HTTPS)');
+      ['siteUrl','userName','userEmail','contactValue'].forEach(id => setFieldError(id, false));
+      let err = false;
+      if (!name) { setFieldError('userName', true); err = true; }
+      if (!email || !email.includes('@')) { setFieldError('userEmail', true); err = true; }
+      if (!site || (!site.startsWith('https://') && !site.startsWith('http://'))) {
+        setFieldError('siteUrl', true); err = true;
+        alert('الرابط يجب أن يبدأ بـ http:// أو https://');
       }
-      if (!contact) { setFieldError('contactValue', true); hasError = true; }
+      if (!contact) { setFieldError('contactValue', true); err = true; }
       if (method === 'email' && contact && !contact.includes('@')) {
-        setFieldError('contactValue', true);
-        alert('الرجاء إدخال بريد إلكتروني صحيح.');
-        hasError = true;
+        setFieldError('contactValue', true); alert('بريد إلكتروني غير صحيح'); err = true;
       }
-      if (hasError) {
-        alert('يرجى تعبئة جميع الحقول المطلوبة بشكل صحيح.');
-        return;
-      }
+      if (err) { alert('يرجى تصحيح الحقول المطلوبة.'); return; }
 
       submitBtn.classList.add('hidden');
-      statusDiv.classList.add('hidden');
-      
-      simulateProgress(site, async () => {
+      requestStatus.classList.add('hidden');
+      simulateProgress(async () => {
         try {
           await db.collection('conversionRequests').add({
             userName: name,
@@ -818,27 +729,17 @@
             status: 'ai_validation_passed',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-
           progressArea.classList.add('hidden');
-          statusDiv.classList.remove('hidden');
-          statusMsg.textContent = `تم فحص ${site} بنجاح بواسطة AI Agent. سيتم إرسال التطبيق عبر ${method === 'whatsapp' ? 'واتساب' : 'البريد'} إلى ${contact} عند الانتهاء.`;
-
+          requestStatus.classList.remove('hidden');
+          statusMessage.textContent = `تم فحص ${site} بنجاح. سيتم إرسال التطبيق عبر ${method === 'whatsapp' ? 'واتساب' : 'البريد'} إلى ${contact} عند الانتهاء.`;
           document.getElementById('siteUrl').value = '';
           document.getElementById('contactValue').value = '';
-          
-          statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-          // تحديث قائمة الطلبات إذا كان المستخدم مسجلًا
-          if (currentUserEmail) {
-            loadUserRequests(currentUserEmail);
-            userRequestsSection.classList.remove('hidden');
-          }
+          requestStatus.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } catch (e) {
-          alert('حدث خطأ في الاتصال: ' + e.message);
+          alert('حدث خطأ: ' + e.message);
           progressArea.classList.add('hidden');
         } finally {
           submitBtn.classList.remove('hidden');
-          submitBtn.innerHTML = '<i class="fas fa-play"></i> فحص PWA وبدء التحويل';
         }
       });
     });
