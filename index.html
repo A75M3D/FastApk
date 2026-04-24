@@ -16,7 +16,43 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    
+    <!-- زر التثبيت في CSS -->
+    <style>
+        .install-btn {
+            background: linear-gradient(135deg, #2563eb, #1e3a8a);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+        }
 
+        .install-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(30, 58, 138, 0.5);
+        }
+
+        .install-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .install-btn.hidden {
+            display: none;
+        }
+    </style>
+    
   <style>
     body {
       background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
@@ -195,6 +231,11 @@
   </style>
 </head>
 <body class="text-gray-800 antialiased">
+<!-- زر تثبيت التطبيق بنفس الطريقة في الكود الأول -->
+    <button id="installBtn" class="install-btn hidden">
+        <i class="fas fa-download ml-2"></i>
+        تثبيت التطبيق
+    </button>
 
   <!-- Firebase config -->
   <script>
