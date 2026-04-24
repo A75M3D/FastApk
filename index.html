@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FastApk | تحويل PWA إلى تطبيق أندرويد بمساعدة AI Agent</title>
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
@@ -17,11 +19,11 @@
       background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
       font-family: 'Tajawal', sans-serif;
     }
-    
+
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 10px; }
-    
+
     .card-premium {
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(8px);
@@ -35,7 +37,7 @@
       box-shadow: 0 30px 50px -15px rgba(30, 58, 138, 0.25);
       border-color: rgba(30, 58, 138, 0.3);
     }
-    
+
     .input-royal {
       background: white;
       border: 1.5px solid #e2e8f0;
@@ -53,7 +55,7 @@
       border-color: #ef4444;
       background-color: #fef2f2;
     }
-    
+
     .btn-royal {
       background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
       color: white;
@@ -64,13 +66,17 @@
       transition: all 0.3s ease;
       border: 1px solid rgba(255,255,255,0.2);
       box-shadow: 0 12px 20px -10px rgba(30, 58, 138, 0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
     .btn-royal:hover {
       background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
       transform: scale(1.01) translateY(-2px);
       box-shadow: 0 22px 30px -12px rgba(30, 64, 175, 0.5);
     }
-    
+
     .ai-pulse {
       animation: softPulse 3s infinite ease-in-out;
     }
@@ -79,7 +85,7 @@
       70% { box-shadow: 0 0 0 12px rgba(30, 58, 138, 0); }
       100% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0); }
     }
-    
+
     .radio-custom {
       appearance: none;
       width: 1.4rem;
@@ -124,6 +130,17 @@
     .progress-icon {
       color: #1e3a8a;
     }
+
+    /* تحسينات النموذج المنبثق */
+    .tab-active {
+      border-bottom: 3px solid #1e3a8a;
+      color: #1e3a8a;
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      transition: opacity 0.3s ease;
+    }
   </style>
 </head>
 <body class="text-gray-800 antialiased">
@@ -140,10 +157,11 @@
       measurementId: "G-LPV8HRYN39"
     };
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
   </script>
 
-  <!-- Navbar فاتح مع تأثير زجاجي خفيف -->
+  <!-- Navbar -->
   <nav class="w-full bg-white/80 backdrop-blur-md border-b border-blue-100/60 fixed top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -154,17 +172,92 @@
           <span class="text-blue-900">Fast</span><span class="text-blue-600">Apk</span>
         </span>
       </div>
-      <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-700">
-        <a href="#" class="hover:text-blue-700 transition border-b-2 border-transparent hover:border-blue-400 pb-1">المميزات</a>
-        <a href="#" class="hover:text-blue-700 transition border-b-2 border-transparent hover:border-blue-400 pb-1">الذكاء الاصطناعي</a>
-        <a href="#" class="hover:text-blue-700 transition border-b-2 border-transparent hover:border-blue-400 pb-1">توثيق PWA</a>
-        <a href="#" class="hover:text-blue-700 transition border-b-2 border-transparent hover:border-blue-400 pb-1">الأسئلة الشائعة</a>
-      </div>
+
+      <!-- أزرار الحساب -->
+      <div class="flex items-center gap-4" id="authButtons"></div>
     </div>
   </nav>
 
+  <!-- نافذة المصادقة (Modal) -->
+  <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center modal-overlay">
+    <div class="card-premium rounded-3xl p-6 md:p-8 w-full max-w-md mx-4 relative transform transition-all">
+      <button id="closeAuthModal" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+
+      <!-- تبويبات -->
+      <div class="flex border-b border-gray-200 mb-6" id="tabContainer">
+        <button id="tabLogin" class="flex-1 pb-3 text-center font-semibold tab-active transition" data-tab="login">تسجيل الدخول</button>
+        <button id="tabRegister" class="flex-1 pb-3 text-center font-semibold text-gray-500 transition" data-tab="register">حساب جديد</button>
+      </div>
+
+      <!-- نموذج تسجيل الدخول -->
+      <form id="loginForm" class="space-y-5">
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">كلمة المرور</label>
+          <input type="password" id="loginPassword" class="input-royal w-full" placeholder="كلمة المرور" required>
+        </div>
+        <button type="submit" class="btn-royal w-full"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        <p id="loginFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
+        <p class="text-center">
+          <a href="#" id="forgotPasswordLink" class="text-sm text-blue-600 hover:underline">نسيت كلمة المرور؟</a>
+        </p>
+      </form>
+
+      <!-- نموذج استعادة كلمة المرور (مخفي افتراضيًا) -->
+      <form id="resetForm" class="space-y-5 hidden">
+        <p class="text-sm text-gray-600">أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.</p>
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
+          <input type="email" id="resetEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
+        </div>
+        <button type="submit" class="btn-royal w-full"><i class="fas fa-paper-plane"></i> إرسال الرابط</button>
+        <p id="resetFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
+        <p class="text-center">
+          <a href="#" id="backToLoginFromReset" class="text-sm text-blue-600 hover:underline">العودة لتسجيل الدخول</a>
+        </p>
+      </form>
+
+      <!-- نموذج إنشاء حساب (مخفي افتراضيًا) -->
+      <form id="registerForm" class="space-y-5 hidden">
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">الاسم الكامل</label>
+          <input type="text" id="regName" class="input-royal w-full" placeholder="محمد العتيبي" required>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
+          <input type="email" id="regEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">كلمة المرور (6 أحرف على الأقل)</label>
+          <input type="password" id="regPassword" class="input-royal w-full" placeholder="كلمة المرور" minlength="6" required>
+        </div>
+        <button type="submit" class="btn-royal w-full"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+        <p id="registerFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
+      </form>
+
+      <!-- رسالة نجاح بعد التسجيل -->
+      <div id="registerSuccess" class="hidden text-center py-6 space-y-4">
+        <i class="fas fa-paper-plane text-5xl text-blue-600"></i>
+        <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط التأكيد</h3>
+        <p class="text-gray-600">تفقد بريدك الإلكتروني واضغط على الرابط لتفعيل الحساب.</p>
+        <button id="backToLoginFromSuccess" class="btn-royal text-sm px-6 py-2">العودة لتسجيل الدخول</button>
+      </div>
+
+      <!-- رسالة نجاح بعد إرسال رابط استعادة كلمة المرور -->
+      <div id="resetSuccess" class="hidden text-center py-6 space-y-4">
+        <i class="fas fa-check-circle text-5xl text-green-600"></i>
+        <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط إعادة التعيين</h3>
+        <p class="text-gray-600">إذا كان البريد مسجلاً لدينا، ستصل رسالة تحتوي على رابط لتغيير كلمة المرور.</p>
+        <button id="backToLoginFromResetSuccess" class="btn-royal text-sm px-6 py-2">العودة لتسجيل الدخول</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- محتوى الصفحة الرئيسي (نموذج تحويل PWA) -->
   <div class="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
-    
     <!-- Hero Section -->
     <div class="text-center max-w-4xl mx-auto mb-14">
       <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-sm font-semibold mb-7 shadow-sm">
@@ -184,7 +277,6 @@
 
     <!-- التخطيط الرئيسي -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-      
       <!-- نموذج الإدخال -->
       <div class="lg:col-span-3 card-premium rounded-3xl p-6 md:p-8 relative overflow-hidden">
         <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-100/60 rounded-full blur-2xl"></div>
@@ -258,7 +350,7 @@
               <i class="fas fa-play"></i> فحص PWA وبدء التحويل
             </button>
 
-            <!-- منطقة شريط التقدم (تظهر عند الضغط) -->
+            <!-- منطقة شريط التقدم -->
             <div id="progressArea" class="hidden mt-4">
               <div class="progress-step">
                 <i class="fas fa-spinner fa-pulse progress-icon"></i>
@@ -282,9 +374,9 @@
         </div>
       </div>
 
-      <!-- الشريط الجانبي (نفس السابق دون تغيير) -->
+      <!-- الشريط الجانبي -->
       <div class="lg:col-span-2 space-y-7">
-        <!-- بطاقة AI Agent تفاعلية -->
+        <!-- بطاقة AI Agent -->
         <div class="card-premium rounded-3xl p-7 ai-pulse border-t-4 border-t-blue-700">
           <div class="flex items-center gap-3 mb-4">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-3xl text-white shadow-md">
@@ -295,9 +387,7 @@
               <p class="text-xs text-blue-700 font-semibold">مراقب ذكي · مصحح تلقائي</p>
             </div>
           </div>
-          <p class="text-sm text-gray-600 leading-relaxed mb-5">
-            أثناء التحويل، يقوم الوكيل الذكي بالمهام التالية:
-          </p>
+          <p class="text-sm text-gray-600 leading-relaxed mb-5">أثناء التحويل، يقوم الوكيل الذكي بالمهام التالية:</p>
           <ul class="space-y-4">
             <li class="flex items-center gap-3 text-gray-700">
               <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span>
@@ -337,7 +427,7 @@
           </div>
         </div>
 
-        <!-- نصائح PWA مختصرة -->
+        <!-- نصائح PWA -->
         <div class="card-premium rounded-3xl p-7 bg-blue-50/70 border border-blue-200">
           <div class="flex items-start gap-3">
             <i class="fas fa-check-circle text-blue-700 text-xl mt-0.5"></i>
@@ -355,7 +445,7 @@
           </div>
         </div>
 
-        <!-- قسم أسئلة سريع -->
+        <!-- أسئلة شائعة -->
         <div class="card-premium rounded-3xl p-7">
           <h4 class="font-bold text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-question-circle text-blue-700"></i> أسئلة شائعة</h4>
           <details class="group mb-3 border-b border-gray-100 pb-3">
@@ -378,7 +468,230 @@
     </div>
   </footer>
 
+  <!-- سكريبتات التطبيق الرئيسية -->
   <script>
+    // ============= إدارة نافذة المصادقة =============
+    const authModal = document.getElementById('authModal');
+    const closeAuthModal = document.getElementById('closeAuthModal');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const resetForm = document.getElementById('resetForm');
+    const registerSuccess = document.getElementById('registerSuccess');
+    const resetSuccess = document.getElementById('resetSuccess');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const authButtons = document.getElementById('authButtons');
+
+    // فتح وإغلاق النافذة
+    function openModal() {
+      authModal.classList.remove('hidden');
+      authModal.classList.add('flex');
+      resetForms();
+      switchTab('login');
+    }
+
+    function closeModal() {
+      authModal.classList.add('hidden');
+      authModal.classList.remove('flex');
+    }
+
+    function resetForms() {
+      loginForm.reset();
+      registerForm.reset();
+      resetForm.reset();
+      document.getElementById('loginFeedback').textContent = '';
+      document.getElementById('registerFeedback').textContent = '';
+      document.getElementById('resetFeedback').textContent = '';
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      resetForm.classList.add('hidden');
+      registerSuccess.classList.add('hidden');
+      resetSuccess.classList.add('hidden');
+    }
+
+    closeAuthModal.addEventListener('click', closeModal);
+    authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
+
+    // تبديل التبويبات
+    function switchTab(tab) {
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        resetForm.classList.add('hidden');
+        registerSuccess.classList.add('hidden');
+        resetSuccess.classList.add('hidden');
+        tabLogin.classList.add('tab-active', 'text-blue-900');
+        tabLogin.classList.remove('text-gray-500');
+        tabRegister.classList.remove('tab-active', 'text-blue-900');
+        tabRegister.classList.add('text-gray-500');
+      } else if (tab === 'register') {
+        registerForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+        resetForm.classList.add('hidden');
+        registerSuccess.classList.add('hidden');
+        resetSuccess.classList.add('hidden');
+        tabRegister.classList.add('tab-active', 'text-blue-900');
+        tabRegister.classList.remove('text-gray-500');
+        tabLogin.classList.remove('tab-active', 'text-blue-900');
+        tabLogin.classList.add('text-gray-500');
+      } else if (tab === 'reset') {
+        resetForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+        registerForm.classList.add('hidden');
+        registerSuccess.classList.add('hidden');
+        resetSuccess.classList.add('hidden');
+        // إخفاء التبويبات في وضع استعادة الكلمة
+        document.getElementById('tabContainer').style.display = 'none';
+      }
+      // إظهار التبويبات إذا لم نكن في وضع reset
+      if (tab !== 'reset') {
+        document.getElementById('tabContainer').style.display = 'flex';
+      }
+    }
+
+    tabLogin.addEventListener('click', () => switchTab('login'));
+    tabRegister.addEventListener('click', () => switchTab('register'));
+
+    // روابط التنقل بين النماذج
+    document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab('reset');
+    });
+    document.getElementById('backToLoginFromReset').addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab('login');
+    });
+    document.getElementById('backToLoginFromSuccess').addEventListener('click', () => {
+      switchTab('login');
+    });
+    document.getElementById('backToLoginFromResetSuccess').addEventListener('click', () => {
+      switchTab('login');
+    });
+
+    // ============= إنشاء حساب =============
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const feedback = document.getElementById('registerFeedback');
+
+      if (!name || !email || password.length < 6) {
+        feedback.textContent = 'يرجى ملء جميع الحقول بشكل صحيح (كلمة المرور 6 أحرف على الأقل).';
+        feedback.className = 'text-red-600 text-sm mt-2';
+        return;
+      }
+
+      try {
+        feedback.textContent = 'جارِ إنشاء الحساب...';
+        feedback.className = 'text-blue-600 text-sm mt-2';
+
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await userCredential.user.updateProfile({ displayName: name });
+        await userCredential.user.sendEmailVerification();
+
+        registerForm.reset();
+        registerForm.classList.add('hidden');
+        registerSuccess.classList.remove('hidden');
+      } catch (error) {
+        feedback.textContent = translateAuthError(error.code);
+        feedback.className = 'text-red-600 text-sm mt-2';
+      }
+    });
+
+    // ============= تسجيل الدخول =============
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const feedback = document.getElementById('loginFeedback');
+
+      if (!email || !password) {
+        feedback.textContent = 'يرجى إدخال البريد وكلمة المرور.';
+        feedback.className = 'text-red-600 text-sm mt-2';
+        return;
+      }
+
+      try {
+        feedback.textContent = 'جارِ تسجيل الدخول...';
+        feedback.className = 'text-blue-600 text-sm mt-2';
+        await auth.signInWithEmailAndPassword(email, password);
+        closeModal();
+      } catch (error) {
+        feedback.textContent = translateAuthError(error.code);
+        feedback.className = 'text-red-600 text-sm mt-2';
+      }
+    });
+
+    // ============= استعادة كلمة المرور =============
+    resetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value.trim();
+      const feedback = document.getElementById('resetFeedback');
+
+      if (!email) {
+        feedback.textContent = 'يرجى إدخال البريد الإلكتروني.';
+        feedback.className = 'text-red-600 text-sm mt-2';
+        return;
+      }
+
+      try {
+        feedback.textContent = 'جارِ إرسال رابط إعادة التعيين...';
+        feedback.className = 'text-blue-600 text-sm mt-2';
+        await auth.sendPasswordResetEmail(email, {
+          url: 'https://pwa2apk-96645.firebaseapp.com/__/auth/action',
+          handleCodeInApp: false
+        });
+        resetForm.reset();
+        resetForm.classList.add('hidden');
+        resetSuccess.classList.remove('hidden');
+      } catch (error) {
+        feedback.textContent = translateAuthError(error.code);
+        feedback.className = 'text-red-600 text-sm mt-2';
+      }
+    });
+
+    // ============= مراقب حالة المستخدم =============
+    auth.onAuthStateChanged((user) => {
+      const userArea = document.getElementById('authButtons');
+      if (user) {
+        const verifiedBadge = user.emailVerified
+          ? '<span class="text-green-600 text-xs"><i class="fas fa-check-circle"></i> مفعل</span>'
+          : '<span class="text-amber-600 text-xs"><i class="fas fa-exclamation-circle"></i> غير مفعل</span>';
+
+        userArea.innerHTML = `
+          <div class="flex items-center gap-3 text-sm">
+            <span class="font-semibold text-gray-900">${user.displayName || 'مستخدم'}</span>
+            ${verifiedBadge}
+            <button onclick="auth.signOut()" class="text-gray-500 hover:text-red-600 transition" title="تسجيل خروج">
+              <i class="fas fa-sign-out-alt text-lg"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        userArea.innerHTML = `
+          <button onclick="openModal()" class="btn-royal text-sm py-2.5 px-5 shadow-md">
+            <i class="fas fa-user"></i> دخول / حساب جديد
+          </button>
+        `;
+      }
+    });
+
+    // ترجمة أخطاء Firebase
+    function translateAuthError(code) {
+      const map = {
+        'auth/email-already-in-use': 'البريد الإلكتروني مستخدم بالفعل.',
+        'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة.',
+        'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل).',
+        'auth/user-not-found': 'لا يوجد حساب بهذا البريد.',
+        'auth/wrong-password': 'كلمة المرور غير صحيحة.',
+        'auth/too-many-requests': 'محاولات كثيرة جداً. حاول مرة أخرى لاحقاً.',
+        'auth/network-request-failed': 'فشل الاتصال بالشبكة، تأكد من الإنترنت.'
+      };
+      return map[code] || 'حدث خطأ غير متوقع. حاول مرة أخرى.';
+    }
+
+    // ============= نموذج تحويل PWA (نفس الكود السابق) =============
     const submitBtn = document.getElementById('submitBtn');
     const progressArea = document.getElementById('progressArea');
     const progressBar = document.getElementById('progressBar');
@@ -388,7 +701,6 @@
     const statusMsg = document.getElementById('statusMessage');
     const contactHint = document.getElementById('contactHint');
 
-    // تحديث التلميح للـ contactValue
     document.querySelectorAll('input[name="contactMethod"]').forEach(radio => {
       radio.addEventListener('change', (e) => {
         const inputField = document.getElementById('contactValue');
@@ -410,7 +722,6 @@
       else field.classList.remove('error');
     }
 
-    // دالة محاكاة التقدم بخطوات واضحة
     function simulateProgress(siteUrl, callback) {
       const steps = [
         { text: 'جارِ الاتصال بالموقع...', detail: 'فحص اتصال HTTPS والتحقق من الشهادة', percent: 15 },
@@ -432,7 +743,6 @@
           progressDetail.textContent = step.detail;
           progressBar.style.width = step.percent + '%';
           
-          // تحديث الأيقونة
           const icon = document.querySelector('#progressArea .progress-icon');
           if (currentStep === steps.length - 1) {
             icon.className = 'fas fa-check-circle text-green-600 progress-icon';
@@ -445,7 +755,7 @@
           clearInterval(interval);
           if (callback) callback();
         }
-      }, 700); // كل خطوة تستغرق 0.7 ثانية
+      }, 700);
     }
 
     submitBtn.addEventListener('click', async () => {
@@ -455,7 +765,6 @@
       const method = document.querySelector('input[name="contactMethod"]:checked').value;
       const contact = document.getElementById('contactValue').value.trim();
 
-      // إعادة ضبط الحقول
       ['siteUrl', 'userName', 'userEmail', 'contactValue'].forEach(id => setFieldError(id, false));
 
       let hasError = false;
@@ -476,13 +785,10 @@
         return;
       }
 
-      // إخفاء الزر وإظهار شريط التقدم
       submitBtn.classList.add('hidden');
       statusDiv.classList.add('hidden');
       
-      // بدء محاكاة التقدم
       simulateProgress(site, async () => {
-        // بعد اكتمال التقدم، إرسال البيانات إلى Firebase
         try {
           await db.collection('conversionRequests').add({
             userName: name,
@@ -494,22 +800,18 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
 
-          // إخفاء شريط التقدم وإظهار رسالة النجاح
           progressArea.classList.add('hidden');
           statusDiv.classList.remove('hidden');
           statusMsg.textContent = `تم فحص ${site} بنجاح بواسطة AI Agent. سيتم إرسال التطبيق عبر ${method === 'whatsapp' ? 'واتساب' : 'البريد'} إلى ${contact} عند الانتهاء.`;
 
-          // تنظيف الحقول
           document.getElementById('siteUrl').value = '';
           document.getElementById('contactValue').value = '';
           
-          // التمرير إلى رسالة النجاح
           statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } catch (e) {
           alert('حدث خطأ في الاتصال: ' + e.message);
           progressArea.classList.add('hidden');
         } finally {
-          // إعادة إظهار الزر (لكننا نظهر رسالة النجاح بدلاً من ذلك)
           submitBtn.classList.remove('hidden');
           submitBtn.innerHTML = '<i class="fas fa-play"></i> فحص PWA وبدء التحويل';
         }
