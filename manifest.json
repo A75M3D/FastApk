@@ -2,7 +2,7 @@
   "name": "FastApk",
   "short_name": "FastApk",
   "description": "منصة تعليمية حديثة تقدم دورات ومهارات عملية لمواكبة سوق العمل.",
-  "id": "/?skillzoy-academy",
+  "id": "/?FastApk",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -12,12 +12,12 @@
 
   "icons": [
     {
-      "src": "/js/ei_1765957630803-removebg-preview.png",
+      "src": "/icon/Picsart_26-04-24_09-59-18-770.jpg",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/js/ei_1765957630803-removebg-preview.png",
+      "src": "/icon/Picsart_26-04-24_09-59-18-770.jpg",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -25,7 +25,7 @@
 
   "screenshots": [
     {
-      "src": "/js/ei_1765957630803-removebg-preview.png",
+      "src": "/icon/Picsart_26-04-24_09-59-18-770.jpg",
       "sizes": "1080x1920",
       "type": "image/png"
     }
