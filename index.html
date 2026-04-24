@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>FastApk | تحويل PWA إلى تطبيق أندرويد بمساعدة AI Agent</title>
+  <title>FastApk | تحويل PWA إلى تطبيق أندرويد - باقات الاشتراك</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,20 +18,17 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
-    /* الأساسيات */
     body {
       background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
       font-family: 'Tajawal', sans-serif;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
     }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 10px; }
 
-    /* بطاقات زجاجية */
     .card-glass {
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.75);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(30, 58, 138, 0.1);
@@ -39,12 +36,11 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .card-glass:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
       box-shadow: 0 30px 50px -15px rgba(30, 58, 138, 0.25);
       border-color: rgba(30, 58, 138, 0.25);
     }
 
-    /* حقول الإدخال */
     .input-royal {
       background: white;
       border: 1.5px solid #e2e8f0;
@@ -64,7 +60,6 @@
       background-color: #fef2f2;
     }
 
-    /* أزرار رئيسية */
     .btn-primary {
       background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
       color: white;
@@ -87,12 +82,9 @@
       box-shadow: 0 22px 30px -12px rgba(30, 64, 175, 0.5);
     }
     .btn-primary:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none;
+      opacity: 0.7; cursor: not-allowed; transform: none;
     }
 
-    /* تأثير AI */
     .ai-glow {
       animation: softPulse 3s infinite ease-in-out;
     }
@@ -102,82 +94,85 @@
       100% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0); }
     }
 
-    /* راديو مخصص */
-    .radio-custom {
-      appearance: none;
-      width: 1.5rem;
-      height: 1.5rem;
-      border: 2px solid #cbd5e1;
-      border-radius: 50%;
-      transition: all 0.15s;
-      cursor: pointer;
-      position: relative;
-    }
-    .radio-custom:checked {
-      border-color: #1e3a8a;
-      background-color: #1e3a8a;
-      box-shadow: inset 0 0 0 4px white, 0 0 0 2px #1e3a8a;
-    }
-
-    /* شريط التقدم */
-    .progress-container {
-      width: 100%;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 12px 0;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-      border-radius: 20px;
-      transition: width 0.4s ease;
-      box-shadow: 0 0 10px #3b82f6;
-    }
-
-    /* التبويبات */
     .tab-active {
-      border-bottom: 3px solid #1e3a8a;
-      color: #1e3a8a !important;
-      font-weight: 700;
+      border-bottom: 3px solid #1e3a8a; color: #1e3a8a !important; font-weight: 700;
     }
 
-    /* Spinner */
     .spinner-sm {
-      border: 3px solid rgba(255,255,255,0.3);
-      border-top: 3px solid white;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 0.6s linear infinite;
-      display: inline-block;
+      border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white;
+      border-radius: 50%; width: 20px; height: 20px;
+      animation: spin 0.6s linear infinite; display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* أيقونة واتساب عائمة */
     .whatsapp-float {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      background-color: #25D366;
-      color: white;
-      border-radius: 50px;
-      padding: 12px 20px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 999;
-      transition: transform 0.2s;
-      text-decoration: none;
+      position: fixed; bottom: 24px; left: 24px;
+      background-color: #25D366; color: white;
+      border-radius: 50px; padding: 12px 24px;
+      font-weight: 700; font-size: 1rem;
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+      display: flex; align-items: center; gap: 10px;
+      z-index: 999; transition: transform 0.2s; text-decoration: none;
     }
-    .whatsapp-float:hover {
-      transform: scale(1.05);
+    .whatsapp-float:hover { transform: scale(1.07); }
+
+    /* تصميم بطاقات الاشتراك */
+    .plan-card {
+      background: white;
+      border-radius: 28px;
+      padding: 2.5rem 1.8rem;
+      text-align: center;
+      border: 1px solid rgba(30,58,138,0.08);
+      box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
     }
+    .plan-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 45px -15px rgba(30, 58, 138, 0.25);
+      border-color: rgba(30,58,138,0.25);
+    }
+    .plan-card.featured {
+      border: 2px solid #1e3a8a;
+      box-shadow: 0 20px 40px -12px rgba(30,58,138,0.3);
+    }
+    .plan-card.featured::before {
+      content: "الأكثر طلباً";
+      position: absolute;
+      top: 18px; left: -32px;
+      background: #1e3a8a; color: white;
+      font-size: 0.8rem; font-weight: 700;
+      padding: 4px 40px;
+      transform: rotate(-45deg);
+    }
+    .plan-price {
+      font-size: 3.2rem; font-weight: 800; color: #1e3a8a;
+      line-height: 1.2; margin: 0.8rem 0 0.2rem;
+    }
+    .plan-price small { font-size: 1.2rem; font-weight: 500; }
+    .plan-duration {
+      font-size: 1.2rem; font-weight: 600; color: #374151;
+      margin-bottom: 1.5rem;
+    }
+    .plan-features {
+      list-style: none; padding: 0; margin: 0 0 2rem;
+      text-align: right; display: inline-block;
+    }
+    .plan-features li {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.95rem; color: #374151; margin-bottom: 0.7rem;
+    }
+    .plan-features i { color: #10b981; font-size: 1.1rem; }
+    .btn-whatsapp {
+      background: #25D366; color: white;
+      border: none; border-radius: 50px;
+      padding: 0.9rem 1.8rem; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 8px;
+      cursor: pointer; transition: all 0.25s;
+      text-decoration: none; font-size: 1rem;
+    }
+    .btn-whatsapp:hover { background: #1da851; transform: scale(1.03); }
   </style>
 </head>
 <body class="text-gray-800 antialiased">
@@ -223,7 +218,6 @@
         <button id="tabRegister" class="flex-1 pb-3 text-center font-semibold text-gray-500" data-tab="register">حساب جديد</button>
       </div>
 
-      <!-- نموذج تسجيل الدخول -->
       <form id="loginForm" class="space-y-5">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
@@ -238,7 +232,6 @@
         <p class="text-center"><a href="#" id="forgotPasswordLink" class="text-sm text-blue-600 hover:underline font-medium">نسيت كلمة المرور؟</a></p>
       </form>
 
-      <!-- نموذج استعادة كلمة المرور -->
       <form id="resetForm" class="space-y-5 hidden">
         <p class="text-sm text-gray-600 leading-relaxed">أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.</p>
         <div>
@@ -250,7 +243,6 @@
         <p class="text-center"><a href="#" id="backToLoginFromReset" class="text-sm text-blue-600 hover:underline font-medium">العودة لتسجيل الدخول</a></p>
       </form>
 
-      <!-- نموذج إنشاء حساب -->
       <form id="registerForm" class="space-y-5 hidden">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">الاسم الكامل</label>
@@ -268,7 +260,6 @@
         <p id="registerFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
       </form>
 
-      <!-- نجاح إنشاء الحساب -->
       <div id="registerSuccess" class="hidden text-center py-6 space-y-4">
         <i class="fas fa-paper-plane text-5xl text-blue-600"></i>
         <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط التأكيد</h3>
@@ -281,7 +272,6 @@
         <button id="backToLoginFromSuccess" class="btn-primary text-sm px-6 py-2">العودة لتسجيل الدخول</button>
       </div>
 
-      <!-- نجاح استعادة كلمة المرور -->
       <div id="resetSuccess" class="hidden text-center py-6 space-y-4">
         <i class="fas fa-check-circle text-5xl text-green-600"></i>
         <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط إعادة التعيين</h3>
@@ -297,144 +287,111 @@
   </div>
 
   <!-- أيقونة واتساب عائمة لخدمة العملاء -->
-  <a href="https://wa.me/249908280115?text=السلام%20عليكم%20لدي%20استفسار%20حول%20طلب%20تحويل%20PWA" target="_blank" class="whatsapp-float" title="خدمة العملاء">
+  <a href="https://wa.me/249908280115?text=السلام%20عليكم%20أحتاج%20مساعدة%20بخصوص%20باقات%20FastApk" target="_blank" class="whatsapp-float" title="خدمة العملاء عبر واتساب">
     <i class="fab fa-whatsapp text-2xl"></i>
     <span>خدمة العملاء</span>
   </a>
 
-  <!-- المحتوى الرئيسي -->
   <main class="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
     <!-- Hero -->
-    <div class="text-center max-w-4xl mx-auto mb-14">
+    <div class="text-center max-w-4xl mx-auto mb-16">
       <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-sm font-semibold mb-7 shadow-sm">
         <i class="fas fa-microchip text-blue-700"></i>
-        <span>AI Agent يرافقك من البداية حتى رفع التطبيق</span>
+        <span>باقات تحويل احترافية مع توقيع آمن وتسليم فوري</span>
         <i class="fas fa-chevron-left text-xs text-blue-400"></i>
       </div>
       <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
-        حول موقعك <span class="text-blue-700">PWA</span> إلى 
-        <span class="text-blue-700">تطبيق أندرويد</span> بضغطة زر
+        اختر باقتك لتحويل <span class="text-blue-700">موقعك PWA</span> إلى تطبيق أندرويد
       </h1>
       <p class="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-        منصة <span class="font-bold text-blue-800">FastApk</span> تدمج محرك فحص PWA مع وكيل ذكاء اصطناعي لضمان تحويل احترافي.
-        <span class="block mt-2 text-blue-800 bg-blue-50 px-4 py-2 rounded-full inline-block border border-blue-100">يشترط أن يكون موقعك مزوداً بملف manifest صالح للـ PWA.</span>
+        منصة <span class="font-bold text-blue-800">FastApk</span> تقدم ثلاث باقات مدفوعة تلبي جميع الاحتياجات، مع دعم فني عبر الواتساب وتسليم سريع.
       </p>
     </div>
 
-    <!-- شبكة المحتوى -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-      <!-- نموذج الإدخال -->
-      <div class="lg:col-span-3 card-glass rounded-3xl p-6 md:p-8 relative overflow-hidden">
-        <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-100/60 rounded-full blur-2xl"></div>
-        <div class="relative z-10">
-          <div class="flex items-center gap-4 mb-8 pb-5 border-b border-blue-100">
-            <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-800">
-              <i class="fas fa-robot text-2xl"></i>
-            </div>
-            <div>
-              <h2 class="text-3xl font-bold text-gray-900">مُعالج FastApk</h2>
-              <p class="text-gray-500 flex items-center gap-2 mt-0.5"><i class="fas fa-shield-check text-blue-600"></i> AI Agent سيتحقق من جاهزية PWA قبل التحويل</p>
-            </div>
-          </div>
-
-          <div class="bg-amber-50 border-r-4 border-amber-500 rounded-xl p-5 mb-7 flex items-start gap-4 shadow-sm">
-            <div class="text-2xl text-amber-600"><i class="fas fa-exclamation-triangle"></i></div>
-            <div>
-              <h4 class="font-extrabold text-gray-800 mb-1">شرط أساسي – PWA Manifest</h4>
-              <p class="text-gray-600 text-sm leading-relaxed">
-                يجب أن يحتوي موقعك على ملف <code class="bg-amber-100 px-2 py-0.5 rounded text-blue-800 text-xs font-mono">manifest.json</code> صالح 
-                ويُخدم عبر HTTPS. سيقوم الـ AI Agent بقراءة هذه البيانات لتوليد تطبيق متكامل.
-              </p>
-            </div>
-          </div>
-
-          <div class="space-y-7">
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-2">رابط الموقع <span class="text-red-500">*</span></label>
-              <div class="relative">
-                <i class="fas fa-link absolute right-4 top-1/2 -translate-y-1/2 text-blue-500"></i>
-                <input type="url" id="siteUrl" placeholder="https://example.com" class="input-royal pr-11 pl-4" dir="ltr">
-              </div>
-              <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="fas fa-info-circle text-blue-500"></i> تأكد من أن الرابط يبدأ بـ HTTPS ويحتوي على manifest.</p>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-2">اسم المطور / الشركة <span class="text-red-500">*</span></label>
-              <input type="text" id="userName" placeholder="مثال: شركة التقنيات الذكية" class="input-royal">
-              <p class="text-xs text-gray-500 mt-2">سيتم استخدامه في شهادة التوقيع (Keystore).</p>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني <span class="text-red-500">*</span></label>
-              <input type="email" id="userEmail" placeholder="developer@company.com" dir="ltr" class="input-royal">
-            </div>
-            <div class="bg-blue-50/70 rounded-2xl p-6 border border-blue-100">
-              <label class="block text-sm font-bold text-gray-700 mb-4">استلام التطبيق عبر <span class="text-red-500">*</span></label>
-              <div class="flex gap-8 mb-5">
-                <label class="flex items-center gap-3 cursor-pointer group">
-                  <input type="radio" name="contactMethod" value="whatsapp" checked class="radio-custom">
-                  <span class="font-medium text-gray-700 group-hover:text-blue-800 transition"><i class="fab fa-whatsapp text-green-600 ml-1 text-lg"></i> واتساب (فوري)</span>
-                </label>
-                <label class="flex items-center gap-3 cursor-pointer group">
-                  <input type="radio" name="contactMethod" value="email" class="radio-custom">
-                  <span class="font-medium text-gray-700 group-hover:text-blue-800 transition"><i class="fas fa-envelope text-blue-600 ml-1 text-lg"></i> البريد الإلكتروني</span>
-                </label>
-              </div>
-              <input type="text" id="contactValue" placeholder="+966 5X XXX XXXX" dir="ltr" class="input-royal bg-white">
-              <p class="text-xs text-gray-500 mt-2" id="contactHint">رقم الواتساب مع مفتاح الدولة</p>
-            </div>
-            <button id="submitBtn" class="btn-primary w-full flex items-center justify-center gap-3 text-lg shadow-xl shadow-blue-200">
-              <i class="fas fa-play"></i> فحص PWA وبدء التحويل
-            </button>
-
-            <div id="progressArea" class="hidden mt-4">
-              <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-spinner fa-pulse text-blue-700"></i>
-                <span id="progressText" class="font-medium">جارِ الاتصال بالخادم...</span>
-              </div>
-              <div class="progress-container">
-                <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
-              </div>
-              <p id="progressDetail" class="text-xs text-gray-500 mt-2">يتم فحص ملفات PWA، يرجى الانتظار...</p>
-            </div>
-
-            <div id="requestStatus" class="hidden mt-6 p-5 rounded-2xl bg-green-50 border border-green-200 text-green-800">
-              <div class="flex items-center gap-3 mb-3">
-                <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                <h3 class="font-bold text-lg">تم استلام الطلب بنجاح</h3>
-              </div>
-              <p id="statusMessage" class="text-sm opacity-90 leading-relaxed"></p>
-              <div class="mt-4 border-t border-green-200 pt-4 text-sm text-green-900">
-                <p><i class="fab fa-whatsapp text-green-600 ml-1"></i> <strong>خدمة العملاء:</strong> إذا تأخر الاستلام أكثر من 10 دقائق، تواصل فوراً على واتساب <span dir="ltr">249908280115</span> وسيتم التسليم مباشرة.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- قسم باقات الاشتراك -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 mb-16">
+      <!-- باقـة يوم -->
+      <div class="plan-card">
+        <i class="fas fa-calendar-day text-4xl text-blue-600 mb-3"></i>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">باقة يوم</h3>
+        <div class="plan-price">10,000 <small>SDG</small></div>
+        <div class="plan-duration">صلاحية يوم واحد</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check-circle"></i> تطبيق واحد فقط</li>
+          <li><i class="fas fa-check-circle"></i> توقيع Keystore خاص</li>
+          <li><i class="fas fa-check-circle"></i> ملف APK + AAB</li>
+          <li><i class="fas fa-check-circle"></i> تسليم عبر واتساب</li>
+        </ul>
+        <a href="https://wa.me/249908280115?text=أرغب%20في%20الاشتراك%20في%20باقة%20اليوم%20(10,000%20SDG)" target="_blank" class="btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> تواصل واتساب للاشتراك
+        </a>
       </div>
 
-      <!-- الشريط الجانبي -->
-      <div class="lg:col-span-2 space-y-7">
-        <div class="card-glass rounded-3xl p-7 ai-glow border-t-4 border-t-blue-700">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-3xl text-white shadow-md"><i class="fas fa-brain"></i></div>
-            <div>
-              <h3 class="font-extrabold text-gray-900 text-xl">AI Agent مدمج</h3>
-              <p class="text-xs text-blue-700 font-semibold">مراقب ذكي · مصحح تلقائي</p>
-            </div>
-          </div>
-          <p class="text-sm text-gray-600 leading-relaxed mb-5">أثناء التحويل، يقوم الوكيل الذكي بالمهام التالية:</p>
-          <ul class="space-y-4">
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> التحقق من صلاحية <code class="bg-gray-100 px-2 py-0.5 rounded text-blue-800 text-xs">manifest.json</code> والأيقونات</li>
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> اقتراح إصلاحات تلقائية لأخطاء PWA الشائعة</li>
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> توليد Keystore آمن ومتوافق مع Google Play</li>
-            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> إشعار فوري عند اكتمال البناء بالطريقة المختارة</li>
-          </ul>
-        </div>
+      <!-- باقـة أسبوع (الأكثر طلباً) -->
+      <div class="plan-card featured">
+        <i class="fas fa-calendar-week text-4xl text-blue-700 mb-3"></i>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">باقة أسبوع</h3>
+        <div class="plan-price">50,000 <small>SDG</small></div>
+        <div class="plan-duration">صلاحية 7 أيام</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check-circle"></i> تطبيق واحد (خلال الأسبوع)</li>
+          <li><i class="fas fa-check-circle"></i> توقيع Keystore خاص</li>
+          <li><i class="fas fa-check-circle"></i> ملف APK + AAB</li>
+          <li><i class="fas fa-check-circle"></i> دعم فني سريع</li>
+        </ul>
+        <a href="https://wa.me/249908280115?text=أرغب%20في%20الاشتراك%20في%20باقة%20الأسبوع%20(50,000%20SDG)" target="_blank" class="btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> تواصل واتساب للاشتراك
+        </a>
+      </div>
 
+      <!-- باقـة شهر -->
+      <div class="plan-card">
+        <i class="fas fa-calendar-alt text-4xl text-blue-600 mb-3"></i>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">باقة شهر</h3>
+        <div class="plan-price">150,000 <small>SDG</small></div>
+        <div class="plan-duration">صلاحية 30 يوم</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check-circle"></i> تطبيق واحد (خلال الشهر)</li>
+          <li><i class="fas fa-check-circle"></i> توقيع Keystore خاص</li>
+          <li><i class="fas fa-check-circle"></i> ملف APK + AAB</li>
+          <li><i class="fas fa-check-circle"></i> دعم فني VIP</li>
+        </ul>
+        <a href="https://wa.me/249908280115?text=أرغب%20في%20الاشتراك%20في%20باقة%20الشهر%20(150,000%20SDG)" target="_blank" class="btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> تواصل واتساب للاشتراك
+        </a>
+      </div>
+    </div>
+
+    <div class="text-center text-gray-500 text-sm">
+      * الأسعار بالجنيه السوداني (SDG). للاشتراك أو الاستفسار، يُرجى التواصل عبر خدمة العملاء الظاهرة في الأسفل.
+    </div>
+
+    <!-- الشريط الجانبي نفسه أسفل الباقات (أو جانبه) - هنا جعلته في صف جديد -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16 items-start">
+      <div class="card-glass rounded-3xl p-7 ai-glow border-t-4 border-t-blue-700">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-3xl text-white shadow-md"><i class="fas fa-brain"></i></div>
+          <div>
+            <h3 class="font-extrabold text-gray-900 text-xl">AI Agent مدمج</h3>
+            <p class="text-xs text-blue-700 font-semibold">مراقب ذكي · مصحح تلقائي</p>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 leading-relaxed mb-5">بعد الاشتراك، يتولى الوكيل الذكي فحص موقعك وتجهيز البناء:</p>
+        <ul class="space-y-4">
+          <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> التحقق من صلاحية <code class="bg-gray-100 px-2 py-0.5 rounded text-blue-800 text-xs">manifest.json</code> والأيقونات</li>
+          <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> اقتراح إصلاحات تلقائية لأخطاء PWA</li>
+          <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> توليد Keystore آمن ومتوافق مع Google Play</li>
+          <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span> تسليم الملفات مباشرة على واتسابك</li>
+        </ul>
+      </div>
+
+      <div class="space-y-7">
         <div class="card-glass rounded-3xl p-7">
-          <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3"><i class="fas fa-gift text-blue-700"></i> ماذا ستحصل؟</h3>
+          <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3"><i class="fas fa-gift text-blue-700"></i> ماذا ستحصل بعد الاشتراك؟</h3>
           <div class="space-y-5">
             <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-700"><i class="fab fa-android text-xl"></i></div><div><strong class="block text-gray-900">ملف APK</strong><span class="text-sm text-gray-500">للتثبيت المباشر والاختبار</span></div></div>
             <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-700"><i class="fab fa-google-play text-xl"></i></div><div><strong class="block text-gray-900">حزمة AAB</strong><span class="text-sm text-gray-500">متوافقة مع متجر Google Play</span></div></div>
-            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700"><i class="fas fa-key text-xl"></i></div><div><strong class="block text-gray-900">Keystore للتوقيع</strong><span class="text-sm text-gray-500">لضمان ملكية التطبيق والتحديثات</span></div></div>
+            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700"><i class="fas fa-key text-xl"></i></div><div><strong class="block text-gray-900">Keystore للتوقيع</strong><span class="text-sm text-gray-500">لضمان ملكية تطبيقك وتحديثاته</span></div></div>
           </div>
         </div>
 
@@ -444,8 +401,8 @@
 
         <div class="card-glass rounded-3xl p-7">
           <h4 class="font-bold text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-question-circle text-blue-700"></i> أسئلة شائعة</h4>
-          <details class="group mb-3 border-b border-gray-100 pb-3"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">ما هي مدة التحويل؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">عادة ما يستغرق بين 3 إلى 7 دقائق بعد التحقق من PWA.</p></details>
-          <details class="group"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">هل يدعم Google Play؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">نعم، نوفر ملف AAB جاهز للرفع، بالإضافة إلى التوقيع الخاص بك.</p></details>
+          <details class="group mb-3 border-b border-gray-100 pb-3"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">كيف أدفع؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">بعد التواصل عبر واتساب خدمة العملاء، سيتم تزويدك بتفاصيل الدفع الإلكتروني.</p></details>
+          <details class="group"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">كم تستغرق عملية التحويل؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">بعد تأكيد الدفع، تستغرق العملية عادة بين 5 إلى 15 دقيقة.</p></details>
         </div>
       </div>
     </div>
@@ -458,7 +415,7 @@
   </footer>
 
   <script>
-    // ---------- عناصر DOM ----------
+    // ---------- DOM Elements ----------
     const authModal = document.getElementById('authModal');
     const closeAuthModal = document.getElementById('closeAuthModal');
     const loginForm = document.getElementById('loginForm');
@@ -478,7 +435,7 @@
     const registerFeedback = document.getElementById('registerFeedback');
     const resetFeedback = document.getElementById('resetFeedback');
 
-    // ---------- دوال عامة ----------
+    // ---------- Helpers ----------
     function toggleLoading(btn, loading) {
       if (loading) {
         btn.disabled = true;
@@ -503,7 +460,7 @@
       return map[code] || 'حدث خطأ غير متوقع. حاول مرة أخرى.';
     }
 
-    // ---------- إدارة النافذة ----------
+    // ---------- Modal ----------
     function openModal() { authModal.classList.add('flex'); authModal.classList.remove('hidden'); resetForms(); switchTab('login'); }
     function closeModal() { authModal.classList.add('hidden'); authModal.classList.remove('flex'); }
     closeAuthModal.addEventListener('click', closeModal);
@@ -542,7 +499,7 @@
     document.getElementById('backToLoginFromSuccess').addEventListener('click', () => switchTab('login'));
     document.getElementById('backToLoginFromResetSuccess').addEventListener('click', () => switchTab('login'));
 
-    // ---------- مصادقة ----------
+    // ---------- Authentication ----------
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('regName').value.trim();
@@ -612,7 +569,7 @@
       }
     });
 
-    // ---------- مراقب حالة المستخدم ----------
+    // ---------- Auth State Observer ----------
     auth.onAuthStateChanged(user => {
       if (user) {
         const badge = user.emailVerified
@@ -628,120 +585,6 @@
       } else {
         authButtons.innerHTML = `<button onclick="openModal()" class="btn-primary text-sm py-2.5 px-5 shadow-md"><i class="fas fa-user"></i> دخول / حساب جديد</button>`;
       }
-    });
-
-    // ---------- نموذج التحويل ----------
-    const submitBtn = document.getElementById('submitBtn');
-    const progressArea = document.getElementById('progressArea');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const progressDetail = document.getElementById('progressDetail');
-    const requestStatus = document.getElementById('requestStatus');
-    const statusMessage = document.getElementById('statusMessage');
-    const contactHint = document.getElementById('contactHint');
-
-    document.querySelectorAll('input[name="contactMethod"]').forEach(r => {
-      r.addEventListener('change', function() {
-        const field = document.getElementById('contactValue');
-        if (this.value === 'whatsapp') {
-          field.placeholder = '+966 5X XXX XXXX';
-          contactHint.textContent = 'رقم الواتساب مع مفتاح الدولة';
-          field.type = 'tel';
-        } else {
-          field.placeholder = 'developer@example.com';
-          contactHint.textContent = 'أدخل بريدك الإلكتروني للاستلام';
-          field.type = 'email';
-        }
-      });
-    });
-
-    function setFieldError(id, isError) {
-      document.getElementById(id).classList.toggle('error', isError);
-    }
-
-    function simulateProgress(callback) {
-      const steps = [
-        { text: 'جارِ الاتصال بالموقع...', detail: 'فحص اتصال HTTPS والتحقق من الشهادة', pct: 15 },
-        { text: 'فحص ملف manifest.json', detail: 'التحقق من وجود المانيفست وصلاحيته', pct: 35 },
-        { text: 'فحص الأيقونات والأبعاد', detail: 'التأكد من وجود أيقونة 512x512', pct: 55 },
-        { text: 'تحليل هيكل PWA', detail: 'مراجعة Service Worker والإعدادات', pct: 75 },
-        { text: 'تجهيز التوقيع الرقمي', detail: 'إنشاء Keystore آمن', pct: 90 },
-        { text: 'اكتمال الفحص!', detail: 'تم التحقق، جارٍ حفظ الطلب...', pct: 100 }
-      ];
-      let i = 0;
-      progressArea.classList.remove('hidden');
-      progressBar.style.width = '0%';
-      const icon = document.querySelector('#progressArea .fa-spinner');
-      const timer = setInterval(() => {
-        if (i < steps.length) {
-          const s = steps[i];
-          progressText.textContent = s.text;
-          progressDetail.textContent = s.detail;
-          progressBar.style.width = s.pct + '%';
-          if (i === steps.length - 1) {
-            icon.classList.remove('fa-spinner', 'fa-pulse');
-            icon.classList.add('fa-check-circle', 'text-green-600');
-          }
-          i++;
-        } else {
-          clearInterval(timer);
-          callback();
-        }
-      }, 700);
-    }
-
-    submitBtn.addEventListener('click', async () => {
-      if (!auth.currentUser) {
-        alert('يرجى تسجيل الدخول أولاً لتقديم الطلب.');
-        openModal();
-        return;
-      }
-      const name = document.getElementById('userName').value.trim();
-      const email = document.getElementById('userEmail').value.trim();
-      const site = document.getElementById('siteUrl').value.trim();
-      const method = document.querySelector('input[name="contactMethod"]:checked').value;
-      const contact = document.getElementById('contactValue').value.trim();
-
-      ['siteUrl','userName','userEmail','contactValue'].forEach(id => setFieldError(id, false));
-      let err = false;
-      if (!name) { setFieldError('userName', true); err = true; }
-      if (!email || !email.includes('@')) { setFieldError('userEmail', true); err = true; }
-      if (!site || (!site.startsWith('https://') && !site.startsWith('http://'))) {
-        setFieldError('siteUrl', true); err = true;
-        alert('الرابط يجب أن يبدأ بـ http:// أو https://');
-      }
-      if (!contact) { setFieldError('contactValue', true); err = true; }
-      if (method === 'email' && contact && !contact.includes('@')) {
-        setFieldError('contactValue', true); alert('بريد إلكتروني غير صحيح'); err = true;
-      }
-      if (err) { alert('يرجى تصحيح الحقول المطلوبة.'); return; }
-
-      submitBtn.classList.add('hidden');
-      requestStatus.classList.add('hidden');
-      simulateProgress(async () => {
-        try {
-          await db.collection('conversionRequests').add({
-            userName: name,
-            userEmail: email,
-            siteUrl: site,
-            contactMethod: method,
-            contactValue: contact,
-            status: 'ai_validation_passed',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          progressArea.classList.add('hidden');
-          requestStatus.classList.remove('hidden');
-          statusMessage.textContent = `تم فحص ${site} بنجاح. سيتم إرسال التطبيق عبر ${method === 'whatsapp' ? 'واتساب' : 'البريد'} إلى ${contact} عند الانتهاء.`;
-          document.getElementById('siteUrl').value = '';
-          document.getElementById('contactValue').value = '';
-          requestStatus.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        } catch (e) {
-          alert('حدث خطأ: ' + e.message);
-          progressArea.classList.add('hidden');
-        } finally {
-          submitBtn.classList.remove('hidden');
-        }
-      });
     });
   </script>
 </body>
