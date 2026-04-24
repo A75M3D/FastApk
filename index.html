@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="description" content="FastApk - تحويل مواقع PWA إلى تطبيقات أندرويد بضغطة زر مع AI Agent">
   <title>FastApk | تحويل PWA إلى تطبيق أندرويد - طلب مجاني وباقات مميزة</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- أيقونات -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -136,6 +146,23 @@
     }
     .whatsapp-float:hover { transform: scale(1.07); }
 
+    /* إشعار تثبيت PWA */
+    .pwa-install-banner {
+      position: fixed; bottom: 90px; left: 24px; right: 24px;
+      background: white; border-radius: 20px;
+      padding: 16px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 998; gap: 12px;
+      border: 1px solid rgba(30,58,138,0.2);
+      display: none;
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
     .plan-card {
       background: white;
       border-radius: 28px;
@@ -212,6 +239,21 @@
     const db = firebase.firestore();
   </script>
 
+  <!-- تسجيل Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('✅ Service Worker مسجل بنجاح:', registration.scope);
+          })
+          .catch(error => {
+            console.log('❌ فشل تسجيل Service Worker:', error);
+          });
+      });
+    }
+  </script>
+
   <!-- الشريط العلوي -->
   <nav class="w-full bg-white/80 backdrop-blur-md border-b border-blue-100/60 fixed top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
@@ -226,6 +268,21 @@
       <div id="authButtons" class="flex items-center gap-4"></div>
     </div>
   </nav>
+
+  <!-- إشعار تثبيت التطبيق PWA -->
+  <div id="pwaInstallBanner" class="pwa-install-banner">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-mobile-alt text-2xl text-blue-700"></i>
+      <div>
+        <p class="font-bold text-gray-900 text-sm">ثبّت التطبيق على هاتفك</p>
+        <p class="text-xs text-gray-500">وصول أسرع وتجربة أفضل</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="pwaInstallBtn" class="btn-primary text-xs py-2 px-4">تثبيت</button>
+      <button id="pwaDismissBtn" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
 
   <!-- نافذة المصادقة -->
   <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center">
@@ -329,7 +386,7 @@
 
     <!-- المحتوى الرئيسي: النموذج أو الباقات حسب حالة المستخدم -->
     <div id="dynamicContentArea" class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-      <!-- النموذج (يُخفى تلقائياً إذا كان لديه طلب سابق) -->
+      <!-- النموذج -->
       <div id="requestFormWrapper" class="lg:col-span-3 card-glass rounded-3xl p-6 md:p-8 relative overflow-hidden">
         <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-100/60 rounded-full blur-2xl"></div>
         <div class="relative z-10">
@@ -384,7 +441,6 @@
             <p class="text-xs text-gray-500 text-center">يمكنك طلب تحويل واحد مجاني. للاستفادة من طلبات إضافية، اختر إحدى الباقات المميزة.</p>
           </form>
 
-          <!-- شريط التقدم -->
           <div id="progressArea" class="hidden mt-6">
             <div class="flex items-center gap-2 mb-2">
               <i class="fas fa-spinner fa-pulse text-blue-700"></i>
@@ -394,7 +450,6 @@
             <p id="progressDetail" class="text-xs text-gray-500 mt-2">فحص ملفات PWA...</p>
           </div>
 
-          <!-- نجاح الطلب المجاني -->
           <div id="requestSuccess" class="hidden mt-6 p-5 rounded-2xl bg-green-50 border border-green-200 text-green-800">
             <div class="flex items-center gap-3 mb-2">
               <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -405,7 +460,7 @@
         </div>
       </div>
 
-      <!-- الشريط الجانبي (يظل ثابتاً) -->
+      <!-- الشريط الجانبي -->
       <div class="lg:col-span-2 space-y-7" id="sidebar">
         <div class="card-glass rounded-3xl p-7 ai-glow border-t-4 border-t-blue-700">
           <div class="flex items-center gap-3 mb-4">
@@ -441,7 +496,7 @@
       </div>
     </div>
 
-    <!-- قسم الباقات (يظهر بعد أول طلب مجاني أو إذا كان لديه طلب سابق) -->
+    <!-- قسم الباقات -->
     <div id="plansSection" class="hidden mt-16">
       <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-10">باقات FastApk المميزة</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
@@ -495,6 +550,37 @@
   </footer>
 
   <script>
+    // ---------- PWA Install Banner ----------
+    let deferredPrompt;
+    const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+    const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+    const pwaDismissBtn = document.getElementById('pwaDismissBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaInstallBanner.style.display = 'flex';
+    });
+
+    pwaInstallBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`PWA install: ${outcome}`);
+        deferredPrompt = null;
+      }
+      pwaInstallBanner.style.display = 'none';
+    });
+
+    pwaDismissBtn.addEventListener('click', () => {
+      pwaInstallBanner.style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      pwaInstallBanner.style.display = 'none';
+      console.log('✅ تم تثبيت التطبيق بنجاح');
+    });
+
     // ---------- متغير عام لتخزين IP ----------
     let userIP = null;
 
@@ -510,7 +596,6 @@
         userIP = 'unknown';
       }
     }
-    // استدعاء الجلب فوراً
     fetchUserIP();
 
     // ---------- DOM ----------
@@ -677,20 +762,14 @@
       }
     });
 
-    // ---------- التحقق من وجود طلب سابق (بالبريد الإلكتروني أو IP) ----------
+    // ---------- التحقق من وجود طلب سابق ----------
     async function checkExistingRequest(userEmail) {
-      if (!userIP) {
-        // إذا لم يتم جلب IP بعد، ننتظر قليلاً أو نعتمد البريد فقط
-        console.warn('IP غير متوفر بعد، سيتم الاعتماد على البريد فقط.');
-      }
-      // البحث بالبريد الإلكتروني
       const emailSnapshot = await db.collection('conversionRequests')
         .where('userEmail', '==', userEmail)
         .limit(1)
         .get();
       if (!emailSnapshot.empty) return true;
 
-      // البحث بعنوان IP إذا كان متوفراً
       if (userIP && userIP !== 'unknown') {
         const ipSnapshot = await db.collection('conversionRequests')
           .where('ipAddress', '==', userIP)
@@ -817,7 +896,6 @@
       }
       if (err) { alert('يرجى تصحيح الحقول المطلوبة.'); return; }
 
-      // التحقق من عدم وجود طلب سابق (بالبريد أو IP)
       const hasRequest = await checkExistingRequest(auth.currentUser.email);
       if (hasRequest) {
         alert('لقد استنفدت طلبك المجاني (أو أن عنوان IP هذا قد استخدم سابقاً). يرجى اختيار إحدى الباقات المدفوعة.');
@@ -845,7 +923,6 @@
           requestSuccess.classList.remove('hidden');
           successMessage.textContent = `تم استلام طلبك للموقع ${site} وسيتم تجهيز التطبيق وإرساله عبر ${method === 'whatsapp' ? 'واتساب' : 'البريد'}.`;
           conversionForm.reset();
-          // إخفاء النموذج وإظهار الباقات
           requestFormWrapper.style.display = 'none';
           plansSection.classList.remove('hidden');
         } catch (err) {
