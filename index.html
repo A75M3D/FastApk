@@ -898,7 +898,7 @@
 
       const hasRequest = await checkExistingRequest(auth.currentUser.email);
       if (hasRequest) {
-        alert('لقد استنفدت طلبك المجاني (أو أن عنوان IP هذا قد استخدم سابقاً). يرجى اختيار إحدى الباقات المدفوعة.');
+        alert('لقد استنفدت طلبك المجاني (أو لقد استخدمت تجربتك المجانية يمكنك التواصل مع خدمة العملاء للأشتراك في إحدى الباقات ). يرجى اختيار إحدى الباقات المدفوعة.');
         requestFormWrapper.style.display = 'none';
         plansSection.classList.remove('hidden');
         return;
