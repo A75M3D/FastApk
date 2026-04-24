@@ -1,7 +1,7 @@
 {
   "name": "FastApk",
   "short_name": "FastApk",
-  "description": "منصة تعليمية حديثة تقدم دورات ومهارات عملية لمواكبة سوق العمل.",
+  "description": "منصة حديثة تحول الموقع الى تطبيق اندرويد بكل سهولة.",
   "id": "/?FastApk",
   "start_url": "/index.html",
   "display": "standalone",
