@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -19,11 +18,9 @@
       background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
       font-family: 'Tajawal', sans-serif;
     }
-
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 10px; }
-
     .card-premium {
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(8px);
@@ -37,7 +34,6 @@
       box-shadow: 0 30px 50px -15px rgba(30, 58, 138, 0.25);
       border-color: rgba(30, 58, 138, 0.3);
     }
-
     .input-royal {
       background: white;
       border: 1.5px solid #e2e8f0;
@@ -55,7 +51,6 @@
       border-color: #ef4444;
       background-color: #fef2f2;
     }
-
     .btn-royal {
       background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
       color: white;
@@ -76,7 +71,10 @@
       transform: scale(1.01) translateY(-2px);
       box-shadow: 0 22px 30px -12px rgba(30, 64, 175, 0.5);
     }
-
+    .btn-royal:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
     .ai-pulse {
       animation: softPulse 3s infinite ease-in-out;
     }
@@ -85,7 +83,6 @@
       70% { box-shadow: 0 0 0 12px rgba(30, 58, 138, 0); }
       100% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0); }
     }
-
     .radio-custom {
       appearance: none;
       width: 1.4rem;
@@ -100,8 +97,6 @@
       background-color: #1e3a8a;
       box-shadow: inset 0 0 0 4px white, 0 0 0 2px #1e3a8a;
     }
-
-    /* شريط التقدم */
     .progress-container {
       width: 100%;
       height: 8px;
@@ -130,17 +125,26 @@
     .progress-icon {
       color: #1e3a8a;
     }
-
-    /* تحسينات النموذج المنبثق */
     .tab-active {
       border-bottom: 3px solid #1e3a8a;
       color: #1e3a8a;
       font-weight: 700;
     }
-
     .modal-overlay {
       transition: opacity 0.3s ease;
     }
+    .spinner {
+      border-top: 3px solid transparent;
+      border-right: 3px solid currentColor;
+      border-bottom: 3px solid currentColor;
+      border-left: 3px solid transparent;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body class="text-gray-800 antialiased">
@@ -172,8 +176,6 @@
           <span class="text-blue-900">Fast</span><span class="text-blue-600">Apk</span>
         </span>
       </div>
-
-      <!-- أزرار الحساب -->
       <div class="flex items-center gap-4" id="authButtons"></div>
     </div>
   </nav>
@@ -183,7 +185,6 @@
     <div class="card-premium rounded-3xl p-6 md:p-8 w-full max-w-md mx-4 relative transform transition-all">
       <button id="closeAuthModal" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
 
-      <!-- تبويبات -->
       <div class="flex border-b border-gray-200 mb-6" id="tabContainer">
         <button id="tabLogin" class="flex-1 pb-3 text-center font-semibold tab-active transition" data-tab="login">تسجيل الدخول</button>
         <button id="tabRegister" class="flex-1 pb-3 text-center font-semibold text-gray-500 transition" data-tab="register">حساب جديد</button>
@@ -199,28 +200,24 @@
           <label class="block text-sm font-bold text-gray-700 mb-2">كلمة المرور</label>
           <input type="password" id="loginPassword" class="input-royal w-full" placeholder="كلمة المرور" required>
         </div>
-        <button type="submit" class="btn-royal w-full"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        <button type="submit" class="btn-royal w-full" id="loginSubmitBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
         <p id="loginFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
-        <p class="text-center">
-          <a href="#" id="forgotPasswordLink" class="text-sm text-blue-600 hover:underline">نسيت كلمة المرور؟</a>
-        </p>
+        <p class="text-center"><a href="#" id="forgotPasswordLink" class="text-sm text-blue-600 hover:underline">نسيت كلمة المرور؟</a></p>
       </form>
 
-      <!-- نموذج استعادة كلمة المرور (مخفي افتراضيًا) -->
+      <!-- نموذج استعادة كلمة المرور -->
       <form id="resetForm" class="space-y-5 hidden">
-        <p class="text-sm text-gray-600">أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.</p>
+        <p class="text-sm text-gray-600">أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.</p>
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
           <input type="email" id="resetEmail" dir="ltr" class="input-royal w-full" placeholder="example@company.com" required>
         </div>
-        <button type="submit" class="btn-royal w-full"><i class="fas fa-paper-plane"></i> إرسال الرابط</button>
+        <button type="submit" class="btn-royal w-full" id="resetSubmitBtn"><i class="fas fa-paper-plane"></i> إرسال الرابط</button>
         <p id="resetFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
-        <p class="text-center">
-          <a href="#" id="backToLoginFromReset" class="text-sm text-blue-600 hover:underline">العودة لتسجيل الدخول</a>
-        </p>
+        <p class="text-center"><a href="#" id="backToLoginFromReset" class="text-sm text-blue-600 hover:underline">العودة لتسجيل الدخول</a></p>
       </form>
 
-      <!-- نموذج إنشاء حساب (مخفي افتراضيًا) -->
+      <!-- نموذج إنشاء حساب -->
       <form id="registerForm" class="space-y-5 hidden">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">الاسم الكامل</label>
@@ -234,29 +231,39 @@
           <label class="block text-sm font-bold text-gray-700 mb-2">كلمة المرور (6 أحرف على الأقل)</label>
           <input type="password" id="regPassword" class="input-royal w-full" placeholder="كلمة المرور" minlength="6" required>
         </div>
-        <button type="submit" class="btn-royal w-full"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+        <button type="submit" class="btn-royal w-full" id="registerSubmitBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
         <p id="registerFeedback" class="text-sm text-center mt-3 min-h-[20px]"></p>
       </form>
 
-      <!-- رسالة نجاح بعد التسجيل -->
+      <!-- نجاح التسجيل -->
       <div id="registerSuccess" class="hidden text-center py-6 space-y-4">
         <i class="fas fa-paper-plane text-5xl text-blue-600"></i>
         <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط التأكيد</h3>
-        <p class="text-gray-600">تفقد بريدك الإلكتروني واضغط على الرابط لتفعيل الحساب.</p>
+        <p class="text-gray-600 leading-relaxed">
+          تم إرسال رابط تأكيد إلى بريدك الإلكتروني.<br>
+          <strong>يرجى التحقق من صندوق الوارد (Inbox)، وإذا لم تجد الرسالة، افحص مجلد الرسائل غير المرغوب فيها (Spam).</strong><br>
+          اضغط على الرابط الموجود في الرسالة لتفعيل حسابك.<br>
+          <span class="font-bold text-blue-800 mt-2 block">مع تحيات فريق FastApk</span>
+        </p>
         <button id="backToLoginFromSuccess" class="btn-royal text-sm px-6 py-2">العودة لتسجيل الدخول</button>
       </div>
 
-      <!-- رسالة نجاح بعد إرسال رابط استعادة كلمة المرور -->
+      <!-- نجاح استعادة كلمة المرور -->
       <div id="resetSuccess" class="hidden text-center py-6 space-y-4">
         <i class="fas fa-check-circle text-5xl text-green-600"></i>
         <h3 class="text-xl font-bold text-gray-900">تم إرسال رابط إعادة التعيين</h3>
-        <p class="text-gray-600">إذا كان البريد مسجلاً لدينا، ستصل رسالة تحتوي على رابط لتغيير كلمة المرور.</p>
+        <p class="text-gray-600 leading-relaxed">
+          إذا كان البريد مسجلاً لدينا، ستصل رسالة إلى صندوق الوارد.<br>
+          <strong>إن لم تجدها، تفقد مجلد الرسائل غير المرغوب فيها (Spam).</strong><br>
+          اضغط الرابط لإعادة تعيين كلمة مرورك.<br>
+          <span class="font-bold text-blue-800 mt-2 block">فريق FastApk</span>
+        </p>
         <button id="backToLoginFromResetSuccess" class="btn-royal text-sm px-6 py-2">العودة لتسجيل الدخول</button>
       </div>
     </div>
   </div>
 
-  <!-- محتوى الصفحة الرئيسي (نموذج تحويل PWA) -->
+  <!-- محتوى الصفحة الرئيسي -->
   <div class="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
     <!-- Hero Section -->
     <div class="text-center max-w-4xl mx-auto mb-14">
@@ -280,7 +287,6 @@
       <!-- نموذج الإدخال -->
       <div class="lg:col-span-3 card-premium rounded-3xl p-6 md:p-8 relative overflow-hidden">
         <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-100/60 rounded-full blur-2xl"></div>
-        
         <div class="relative z-10">
           <div class="flex items-center gap-4 mb-8 pb-5 border-b border-blue-100">
             <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-800">
@@ -292,7 +298,6 @@
             </div>
           </div>
 
-          <!-- تنبيه PWA -->
           <div class="bg-amber-50 border-r-4 border-amber-500 rounded-xl p-5 mb-7 flex items-start gap-4 shadow-sm">
             <div class="text-2xl text-amber-600"><i class="fas fa-exclamation-triangle"></i></div>
             <div>
@@ -305,7 +310,6 @@
           </div>
 
           <div class="space-y-7">
-            <!-- URL -->
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-2">رابط الموقع <span class="text-red-500">*</span></label>
               <div class="relative">
@@ -314,21 +318,15 @@
               </div>
               <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="fas fa-info-circle text-blue-500"></i> تأكد من أن الرابط يبدأ بـ HTTPS ويحتوي على manifest.</p>
             </div>
-
-            <!-- اسم المطور -->
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-2">اسم المطور / الشركة <span class="text-red-500">*</span></label>
               <input type="text" id="userName" placeholder="مثال: شركة التقنيات الذكية" class="input-royal w-full">
               <p class="text-xs text-gray-500 mt-2">سيتم استخدامه في شهادة التوقيع (Keystore).</p>
             </div>
-
-            <!-- البريد الإلكتروني -->
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني <span class="text-red-500">*</span></label>
               <input type="email" id="userEmail" placeholder="developer@company.com" dir="ltr" class="input-royal w-full">
             </div>
-
-            <!-- طريقة الاستلام -->
             <div class="bg-blue-50/70 rounded-2xl p-6 border border-blue-100">
               <label class="block text-sm font-bold text-gray-700 mb-4">استلام التطبيق عبر <span class="text-red-500">*</span></label>
               <div class="flex gap-8 mb-5">
@@ -344,13 +342,9 @@
               <input type="text" id="contactValue" placeholder="+966 5X XXX XXXX" dir="ltr" class="input-royal w-full bg-white">
               <p class="text-xs text-gray-500 mt-2" id="contactHint">رقم الواتساب مع مفتاح الدولة</p>
             </div>
-
-            <!-- زر البدء -->
             <button id="submitBtn" class="btn-royal w-full flex items-center justify-center gap-3 text-lg shadow-xl shadow-blue-200">
               <i class="fas fa-play"></i> فحص PWA وبدء التحويل
             </button>
-
-            <!-- منطقة شريط التقدم -->
             <div id="progressArea" class="hidden mt-4">
               <div class="progress-step">
                 <i class="fas fa-spinner fa-pulse progress-icon"></i>
@@ -361,8 +355,6 @@
               </div>
               <p id="progressDetail" class="text-xs text-gray-500 mt-2">يتم فحص ملفات PWA، يرجى الانتظار...</p>
             </div>
-
-            <!-- حالة الطلب (نجاح) -->
             <div id="requestStatus" class="hidden mt-6 p-5 rounded-2xl bg-green-50 border border-green-200 text-green-800">
               <div class="flex items-center gap-3 mb-2">
                 <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -376,7 +368,6 @@
 
       <!-- الشريط الجانبي -->
       <div class="lg:col-span-2 space-y-7">
-        <!-- بطاقة AI Agent -->
         <div class="card-premium rounded-3xl p-7 ai-pulse border-t-4 border-t-blue-700">
           <div class="flex items-center gap-3 mb-4">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-3xl text-white shadow-md">
@@ -389,88 +380,53 @@
           </div>
           <p class="text-sm text-gray-600 leading-relaxed mb-5">أثناء التحويل، يقوم الوكيل الذكي بالمهام التالية:</p>
           <ul class="space-y-4">
-            <li class="flex items-center gap-3 text-gray-700">
-              <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span>
-              <span>التحقق من صلاحية <code class="bg-gray-100 px-2 py-0.5 rounded text-blue-800 text-xs">manifest.json</code> والأيقونات</span>
-            </li>
-            <li class="flex items-center gap-3 text-gray-700">
-              <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span>
-              <span>اقتراح إصلاحات تلقائية لأخطاء PWA الشائعة</span>
-            </li>
-            <li class="flex items-center gap-3 text-gray-700">
-              <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span>
-              <span>توليد Keystore آمن ومتوافق مع Google Play</span>
-            </li>
-            <li class="flex items-center gap-3 text-gray-700">
-              <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span>
-              <span>إشعار فوري عند اكتمال البناء بالطريقة المختارة</span>
-            </li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>التحقق من صلاحية <code class="bg-gray-100 px-2 py-0.5 rounded text-blue-800 text-xs">manifest.json</code> والأيقونات</span></li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>اقتراح إصلاحات تلقائية لأخطاء PWA الشائعة</span></li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>توليد Keystore آمن ومتوافق مع Google Play</span></li>
+            <li class="flex items-center gap-3 text-gray-700"><span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm"><i class="fas fa-check"></i></span><span>إشعار فوري عند اكتمال البناء بالطريقة المختارة</span></li>
           </ul>
         </div>
-
-        <!-- حزمة المخرجات -->
         <div class="card-premium rounded-3xl p-7">
           <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3"><i class="fas fa-gift text-blue-700"></i> ماذا ستحصل؟</h3>
           <div class="space-y-5">
-            <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-700"><i class="fab fa-android text-xl"></i></div>
-              <div><strong class="block text-gray-900">ملف APK</strong><span class="text-sm text-gray-500">للتثبيت المباشر والاختبار</span></div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-700"><i class="fab fa-google-play text-xl"></i></div>
-              <div><strong class="block text-gray-900">حزمة AAB</strong><span class="text-sm text-gray-500">متوافقة مع متجر Google Play</span></div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700"><i class="fas fa-key text-xl"></i></div>
-              <div><strong class="block text-gray-900">Keystore للتوقيع</strong><span class="text-sm text-gray-500">لضمان ملكية التطبيق والتحديثات</span></div>
-            </div>
+            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-700"><i class="fab fa-android text-xl"></i></div><div><strong class="block text-gray-900">ملف APK</strong><span class="text-sm text-gray-500">للتثبيت المباشر والاختبار</span></div></div>
+            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-700"><i class="fab fa-google-play text-xl"></i></div><div><strong class="block text-gray-900">حزمة AAB</strong><span class="text-sm text-gray-500">متوافقة مع متجر Google Play</span></div></div>
+            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700"><i class="fas fa-key text-xl"></i></div><div><strong class="block text-gray-900">Keystore للتوقيع</strong><span class="text-sm text-gray-500">لضمان ملكية التطبيق والتحديثات</span></div></div>
           </div>
         </div>
-
-        <!-- نصائح PWA -->
         <div class="card-premium rounded-3xl p-7 bg-blue-50/70 border border-blue-200">
-          <div class="flex items-start gap-3">
-            <i class="fas fa-check-circle text-blue-700 text-xl mt-0.5"></i>
-            <div>
-              <h4 class="font-bold text-gray-900">متطلبات PWA الناجح</h4>
-              <ul class="text-sm text-gray-600 space-y-1 mt-3 list-disc list-inside marker:text-blue-500">
-                <li>وجود <code>manifest.json</code> مرتبط</li>
-                <li>أيقونة بحجم 512x512 على الأقل</li>
-                <li>الموقع يخدم عبر HTTPS</li>
-              </ul>
-              <div class="mt-4 text-xs text-gray-500 border-t border-blue-200 pt-4">
-                <i class="fas fa-robot text-blue-600 ml-1"></i> سيساعدك AI Agent في تشخيص أي نقص.
-              </div>
-            </div>
-          </div>
+          <div class="flex items-start gap-3"><i class="fas fa-check-circle text-blue-700 text-xl mt-0.5"></i><div><h4 class="font-bold text-gray-900">متطلبات PWA الناجح</h4><ul class="text-sm text-gray-600 space-y-1 mt-3 list-disc list-inside marker:text-blue-500"><li>وجود <code>manifest.json</code> مرتبط</li><li>أيقونة بحجم 512x512 على الأقل</li><li>الموقع يخدم عبر HTTPS</li></ul><div class="mt-4 text-xs text-gray-500 border-t border-blue-200 pt-4"><i class="fas fa-robot text-blue-600 ml-1"></i> سيساعدك AI Agent في تشخيص أي نقص.</div></div></div>
         </div>
-
-        <!-- أسئلة شائعة -->
         <div class="card-premium rounded-3xl p-7">
           <h4 class="font-bold text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-question-circle text-blue-700"></i> أسئلة شائعة</h4>
-          <details class="group mb-3 border-b border-gray-100 pb-3">
-            <summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">ما هي مدة التحويل؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary>
-            <p class="text-sm text-gray-600 mt-2 pr-2">عادة ما يستغرق بين 3 إلى 7 دقائق بعد التحقق من PWA.</p>
-          </details>
-          <details class="group">
-            <summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">هل يدعم Google Play؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary>
-            <p class="text-sm text-gray-600 mt-2 pr-2">نعم، نوفر ملف AAB جاهز للرفع، بالإضافة إلى التوقيع الخاص بك.</p>
-          </details>
+          <details class="group mb-3 border-b border-gray-100 pb-3"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">ما هي مدة التحويل؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">عادة ما يستغرق بين 3 إلى 7 دقائق بعد التحقق من PWA.</p></details>
+          <details class="group"><summary class="font-medium text-gray-700 cursor-pointer list-none flex items-center justify-between">هل يدعم Google Play؟ <i class="fas fa-chevron-down text-xs text-blue-600 group-open:rotate-180 transition"></i></summary><p class="text-sm text-gray-600 mt-2 pr-2">نعم، نوفر ملف AAB جاهز للرفع، بالإضافة إلى التوقيع الخاص بك.</p></details>
         </div>
+      </div>
+    </div>
+
+    <!-- قسم طلباتي (يظهر عند تسجيل الدخول) -->
+    <div id="userRequestsSection" class="hidden mt-12 card-premium rounded-3xl p-6 md:p-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+          <i class="fas fa-list-ul text-blue-700"></i> طلباتي السابقة
+        </h2>
+        <button id="closeRequestsBtn" class="text-gray-500 hover:text-gray-700 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="requestsList" class="space-y-4">
+        <!-- تُملأ عبر JavaScript -->
       </div>
     </div>
   </div>
 
-  <!-- تذييل -->
   <footer class="border-t border-blue-100 bg-white/60 backdrop-blur-sm py-8 mt-10">
     <div class="max-w-7xl mx-auto px-6 text-center text-gray-600 text-sm">
       <span class="font-bold text-blue-800 text-lg">FastApk</span> © 2025 · تصميم احترافي لتجربة سلسة
     </div>
   </footer>
 
-  <!-- سكريبتات التطبيق الرئيسية -->
   <script>
-    // ============= إدارة نافذة المصادقة =============
+    // ============= DOM Elements =============
     const authModal = document.getElementById('authModal');
     const closeAuthModal = document.getElementById('closeAuthModal');
     const loginForm = document.getElementById('loginForm');
@@ -481,8 +437,34 @@
     const tabLogin = document.getElementById('tabLogin');
     const tabRegister = document.getElementById('tabRegister');
     const authButtons = document.getElementById('authButtons');
+    const userRequestsSection = document.getElementById('userRequestsSection');
+    const requestsList = document.getElementById('requestsList');
+    const closeRequestsBtn = document.getElementById('closeRequestsBtn');
 
-    // فتح وإغلاق النافذة
+    // Form submit buttons
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+    const resetSubmitBtn = document.getElementById('resetSubmitBtn');
+
+    // Feedback paragraphs
+    const loginFeedback = document.getElementById('loginFeedback');
+    const registerFeedback = document.getElementById('registerFeedback');
+    const resetFeedback = document.getElementById('resetFeedback');
+
+    // ============= Helper: Loading State =============
+    function setLoading(button, isLoading, originalHTML) {
+      if (isLoading) {
+        button.disabled = true;
+        button.dataset.original = button.innerHTML;
+        button.innerHTML = `<span class="spinner"></span> جارٍ المعالجة...`;
+      } else {
+        button.disabled = false;
+        button.innerHTML = button.dataset.original || originalHTML;
+        delete button.dataset.original;
+      }
+    }
+
+    // ============= Modal Controls =============
     function openModal() {
       authModal.classList.remove('hidden');
       authModal.classList.add('flex');
@@ -496,96 +478,59 @@
     }
 
     function resetForms() {
-      loginForm.reset();
-      registerForm.reset();
-      resetForm.reset();
-      document.getElementById('loginFeedback').textContent = '';
-      document.getElementById('registerFeedback').textContent = '';
-      document.getElementById('resetFeedback').textContent = '';
-      loginForm.classList.remove('hidden');
-      registerForm.classList.add('hidden');
-      resetForm.classList.add('hidden');
-      registerSuccess.classList.add('hidden');
-      resetSuccess.classList.add('hidden');
+      loginForm.reset(); registerForm.reset(); resetForm.reset();
+      loginFeedback.textContent = ''; registerFeedback.textContent = ''; resetFeedback.textContent = '';
+      loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
+      resetForm.classList.add('hidden'); registerSuccess.classList.add('hidden'); resetSuccess.classList.add('hidden');
+      setLoading(loginSubmitBtn, false); setLoading(registerSubmitBtn, false); setLoading(resetSubmitBtn, false);
     }
 
     closeAuthModal.addEventListener('click', closeModal);
     authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
 
-    // تبديل التبويبات
+    // ============= Tab Switching =============
     function switchTab(tab) {
+      document.getElementById('tabContainer').style.display = (tab === 'reset') ? 'none' : 'flex';
+      loginForm.classList.add('hidden'); registerForm.classList.add('hidden');
+      resetForm.classList.add('hidden'); registerSuccess.classList.add('hidden'); resetSuccess.classList.add('hidden');
+      tabLogin.classList.remove('tab-active', 'text-blue-900'); tabLogin.classList.add('text-gray-500');
+      tabRegister.classList.remove('tab-active', 'text-blue-900'); tabRegister.classList.add('text-gray-500');
+
       if (tab === 'login') {
         loginForm.classList.remove('hidden');
-        registerForm.classList.add('hidden');
-        resetForm.classList.add('hidden');
-        registerSuccess.classList.add('hidden');
-        resetSuccess.classList.add('hidden');
-        tabLogin.classList.add('tab-active', 'text-blue-900');
-        tabLogin.classList.remove('text-gray-500');
-        tabRegister.classList.remove('tab-active', 'text-blue-900');
-        tabRegister.classList.add('text-gray-500');
+        tabLogin.classList.add('tab-active', 'text-blue-900'); tabLogin.classList.remove('text-gray-500');
       } else if (tab === 'register') {
         registerForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-        resetForm.classList.add('hidden');
-        registerSuccess.classList.add('hidden');
-        resetSuccess.classList.add('hidden');
-        tabRegister.classList.add('tab-active', 'text-blue-900');
-        tabRegister.classList.remove('text-gray-500');
-        tabLogin.classList.remove('tab-active', 'text-blue-900');
-        tabLogin.classList.add('text-gray-500');
+        tabRegister.classList.add('tab-active', 'text-blue-900'); tabRegister.classList.remove('text-gray-500');
       } else if (tab === 'reset') {
         resetForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-        registerForm.classList.add('hidden');
-        registerSuccess.classList.add('hidden');
-        resetSuccess.classList.add('hidden');
-        // إخفاء التبويبات في وضع استعادة الكلمة
-        document.getElementById('tabContainer').style.display = 'none';
-      }
-      // إظهار التبويبات إذا لم نكن في وضع reset
-      if (tab !== 'reset') {
-        document.getElementById('tabContainer').style.display = 'flex';
       }
     }
 
     tabLogin.addEventListener('click', () => switchTab('login'));
     tabRegister.addEventListener('click', () => switchTab('register'));
 
-    // روابط التنقل بين النماذج
-    document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      switchTab('reset');
-    });
-    document.getElementById('backToLoginFromReset').addEventListener('click', (e) => {
-      e.preventDefault();
-      switchTab('login');
-    });
-    document.getElementById('backToLoginFromSuccess').addEventListener('click', () => {
-      switchTab('login');
-    });
-    document.getElementById('backToLoginFromResetSuccess').addEventListener('click', () => {
-      switchTab('login');
-    });
+    document.getElementById('forgotPasswordLink').addEventListener('click', (e) => { e.preventDefault(); switchTab('reset'); });
+    document.getElementById('backToLoginFromReset').addEventListener('click', (e) => { e.preventDefault(); switchTab('login'); });
+    document.getElementById('backToLoginFromSuccess').addEventListener('click', () => switchTab('login'));
+    document.getElementById('backToLoginFromResetSuccess').addEventListener('click', () => switchTab('login'));
 
-    // ============= إنشاء حساب =============
+    // ============= Authentication Logic =============
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('regName').value.trim();
       const email = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value;
-      const feedback = document.getElementById('registerFeedback');
+      registerFeedback.textContent = '';
 
       if (!name || !email || password.length < 6) {
-        feedback.textContent = 'يرجى ملء جميع الحقول بشكل صحيح (كلمة المرور 6 أحرف على الأقل).';
-        feedback.className = 'text-red-600 text-sm mt-2';
+        registerFeedback.textContent = 'يرجى ملء جميع الحقول بشكل صحيح (كلمة المرور 6 أحرف على الأقل).';
+        registerFeedback.className = 'text-red-600 text-sm mt-2';
         return;
       }
 
+      setLoading(registerSubmitBtn, true);
       try {
-        feedback.textContent = 'جارِ إنشاء الحساب...';
-        feedback.className = 'text-blue-600 text-sm mt-2';
-
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         await userCredential.user.updateProfile({ displayName: name });
         await userCredential.user.sendEmailVerification();
@@ -594,50 +539,50 @@
         registerForm.classList.add('hidden');
         registerSuccess.classList.remove('hidden');
       } catch (error) {
-        feedback.textContent = translateAuthError(error.code);
-        feedback.className = 'text-red-600 text-sm mt-2';
+        registerFeedback.textContent = translateAuthError(error.code);
+        registerFeedback.className = 'text-red-600 text-sm mt-2';
+      } finally {
+        setLoading(registerSubmitBtn, false);
       }
     });
 
-    // ============= تسجيل الدخول =============
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      const feedback = document.getElementById('loginFeedback');
+      loginFeedback.textContent = '';
 
       if (!email || !password) {
-        feedback.textContent = 'يرجى إدخال البريد وكلمة المرور.';
-        feedback.className = 'text-red-600 text-sm mt-2';
+        loginFeedback.textContent = 'يرجى إدخال البريد وكلمة المرور.';
+        loginFeedback.className = 'text-red-600 text-sm mt-2';
         return;
       }
 
+      setLoading(loginSubmitBtn, true);
       try {
-        feedback.textContent = 'جارِ تسجيل الدخول...';
-        feedback.className = 'text-blue-600 text-sm mt-2';
         await auth.signInWithEmailAndPassword(email, password);
         closeModal();
       } catch (error) {
-        feedback.textContent = translateAuthError(error.code);
-        feedback.className = 'text-red-600 text-sm mt-2';
+        loginFeedback.textContent = translateAuthError(error.code);
+        loginFeedback.className = 'text-red-600 text-sm mt-2';
+      } finally {
+        setLoading(loginSubmitBtn, false);
       }
     });
 
-    // ============= استعادة كلمة المرور =============
     resetForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('resetEmail').value.trim();
-      const feedback = document.getElementById('resetFeedback');
+      resetFeedback.textContent = '';
 
       if (!email) {
-        feedback.textContent = 'يرجى إدخال البريد الإلكتروني.';
-        feedback.className = 'text-red-600 text-sm mt-2';
+        resetFeedback.textContent = 'يرجى إدخال البريد الإلكتروني.';
+        resetFeedback.className = 'text-red-600 text-sm mt-2';
         return;
       }
 
+      setLoading(resetSubmitBtn, true);
       try {
-        feedback.textContent = 'جارِ إرسال رابط إعادة التعيين...';
-        feedback.className = 'text-blue-600 text-sm mt-2';
         await auth.sendPasswordResetEmail(email, {
           url: 'https://pwa2apk-96645.firebaseapp.com/__/auth/action',
           handleCodeInApp: false
@@ -646,38 +591,105 @@
         resetForm.classList.add('hidden');
         resetSuccess.classList.remove('hidden');
       } catch (error) {
-        feedback.textContent = translateAuthError(error.code);
-        feedback.className = 'text-red-600 text-sm mt-2';
+        resetFeedback.textContent = translateAuthError(error.code);
+        resetFeedback.className = 'text-red-600 text-sm mt-2';
+      } finally {
+        setLoading(resetSubmitBtn, false);
       }
     });
 
-    // ============= مراقب حالة المستخدم =============
+    // ============= Auth State Observer + User Requests =============
+    let currentUserEmail = null;
+
     auth.onAuthStateChanged((user) => {
       const userArea = document.getElementById('authButtons');
       if (user) {
-        const verifiedBadge = user.emailVerified
-          ? '<span class="text-green-600 text-xs"><i class="fas fa-check-circle"></i> مفعل</span>'
-          : '<span class="text-amber-600 text-xs"><i class="fas fa-exclamation-circle"></i> غير مفعل</span>';
+        currentUserEmail = user.email;
+        const statusBadge = user.emailVerified
+          ? '<span class="inline-flex items-center gap-1 text-green-700 bg-green-100 px-3 py-1 rounded-full text-xs font-semibold"><i class="fas fa-user-circle text-green-500"></i> نشط الآن</span>'
+          : '<span class="inline-flex items-center gap-1 text-amber-700 bg-amber-100 px-3 py-1 rounded-full text-xs font-semibold"><i class="fas fa-user-circle text-amber-500"></i> غير مفعل</span>';
 
         userArea.innerHTML = `
           <div class="flex items-center gap-3 text-sm">
             <span class="font-semibold text-gray-900">${user.displayName || 'مستخدم'}</span>
-            ${verifiedBadge}
-            <button onclick="auth.signOut()" class="text-gray-500 hover:text-red-600 transition" title="تسجيل خروج">
-              <i class="fas fa-sign-out-alt text-lg"></i>
-            </button>
+            ${statusBadge}
+            <button onclick="auth.signOut()" class="text-gray-500 hover:text-red-600 transition" title="تسجيل خروج"><i class="fas fa-sign-out-alt text-lg"></i></button>
           </div>
         `;
+
+        // إظهار قسم الطلبات
+        userRequestsSection.classList.remove('hidden');
+        loadUserRequests(user.email);
       } else {
+        currentUserEmail = null;
         userArea.innerHTML = `
-          <button onclick="openModal()" class="btn-royal text-sm py-2.5 px-5 shadow-md">
-            <i class="fas fa-user"></i> دخول / حساب جديد
-          </button>
+          <button onclick="openModal()" class="btn-royal text-sm py-2.5 px-5 shadow-md"><i class="fas fa-user"></i> دخول / حساب جديد</button>
         `;
+        userRequestsSection.classList.add('hidden');
       }
     });
 
-    // ترجمة أخطاء Firebase
+    closeRequestsBtn.addEventListener('click', () => {
+      userRequestsSection.classList.add('hidden');
+    });
+
+    // ============= Firestore: Load & Delete Requests =============
+    async function loadUserRequests(userEmail) {
+      requestsList.innerHTML = `<div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-pulse text-2xl"></i><p class="mt-2">جارٍ تحميل الطلبات...</p></div>`;
+      try {
+        const snapshot = await db.collection('conversionRequests')
+          .where('userEmail', '==', userEmail)
+          .orderBy('createdAt', 'desc')
+          .get();
+
+        if (snapshot.empty) {
+          requestsList.innerHTML = `<div class="text-center text-gray-500 py-8"><i class="fas fa-inbox text-4xl"></i><p class="mt-2">لا توجد طلبات حالياً.</p></div>`;
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const statusText = data.status === 'completed' ? 'اكتمل بنجاح' :
+                             data.status === 'failed' ? 'فشل' : 'قيد المعالجة';
+          const statusColor = data.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              data.status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800';
+          const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-SA') : '---';
+          html += `
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+              <div class="flex-1">
+                <p class="font-bold text-gray-800" dir="ltr">${data.siteUrl || '---'}</p>
+                <p class="text-xs text-gray-500 mt-1">${date}</p>
+              </div>
+              <div class="flex items-center gap-3 mt-3 md:mt-0">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColor}">${statusText}</span>
+                <button class="text-red-500 hover:text-red-700 transition delete-request-btn" data-id="${doc.id}"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </div>
+          `;
+        });
+        requestsList.innerHTML = html;
+
+        // Attach delete events
+        document.querySelectorAll('.delete-request-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = btn.dataset.id;
+            if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+              try {
+                await db.collection('conversionRequests').doc(id).delete();
+                loadUserRequests(userEmail); // refresh
+              } catch (err) {
+                alert('فشل الحذف: ' + err.message);
+              }
+            }
+          });
+        });
+      } catch (err) {
+        requestsList.innerHTML = `<div class="text-center text-red-600 py-8"><i class="fas fa-exclamation-circle text-2xl"></i><p class="mt-2">خطأ في التحميل: ${err.message}</p></div>`;
+      }
+    }
+
+    // ============= Error Translation =============
     function translateAuthError(code) {
       const map = {
         'auth/email-already-in-use': 'البريد الإلكتروني مستخدم بالفعل.',
@@ -691,7 +703,7 @@
       return map[code] || 'حدث خطأ غير متوقع. حاول مرة أخرى.';
     }
 
-    // ============= نموذج تحويل PWA (نفس الكود السابق) =============
+    // ============= PWA Conversion Form =============
     const submitBtn = document.getElementById('submitBtn');
     const progressArea = document.getElementById('progressArea');
     const progressBar = document.getElementById('progressBar');
@@ -759,6 +771,13 @@
     }
 
     submitBtn.addEventListener('click', async () => {
+      // إذا لم يكن المستخدم مسجلًا، نطلب تسجيل الدخول
+      if (!auth.currentUser) {
+        alert('يرجى تسجيل الدخول أولاً قبل تقديم الطلب.');
+        openModal();
+        return;
+      }
+
       const name = document.getElementById('userName').value.trim();
       const email = document.getElementById('userEmail').value.trim();
       const site = document.getElementById('siteUrl').value.trim();
@@ -808,6 +827,12 @@
           document.getElementById('contactValue').value = '';
           
           statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+          // تحديث قائمة الطلبات إذا كان المستخدم مسجلًا
+          if (currentUserEmail) {
+            loadUserRequests(currentUserEmail);
+            userRequestsSection.classList.remove('hidden');
+          }
         } catch (e) {
           alert('حدث خطأ في الاتصال: ' + e.message);
           progressArea.classList.add('hidden');
